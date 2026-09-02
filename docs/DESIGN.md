@@ -63,6 +63,9 @@ renders — not as a place where values get computed or branches get resolved.
   (`categories.ts`), not exported alongside a component — that keeps Fast Refresh working.
 - Co-locate: sub-component files live in the same folder as the experiment (or beside the promoted
   component), so the whole unit moves together during promotion.
+- **Dev-only controls** (sliders / toggles for tuning settings live) are the exception: put them in a
+  `controls/` subfolder of the experiment so they are *not* promoted with the piece. Ask the designer
+  which settings deserve a control — and its range / default — before building them.
 
 ## Copy
 
