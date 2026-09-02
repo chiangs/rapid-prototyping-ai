@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import type { Experiment } from "@/experiments/registry";
-import { ComplexityBadge } from "./ComplexityBadge";
+import { ComplexityBadge } from "../shared/ComplexityBadge";
 
 export function ExperimentCard({ experiment }: { experiment: Experiment }) {
   const tags = experiment.tags.map((tag) => (

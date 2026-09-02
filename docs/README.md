@@ -9,7 +9,7 @@ enforce on their own, written down so every experiment stays consistent.
 ## When to use it
 
 - **Skim it** before starting a new experiment.
-- **Reference it** when reviewing what the agent produced.
+- **Reference it** when reviewing what the agent produced. In this case the `Claude.md` file already has a reference to it in memory.
 - **Check against it** before promoting an experiment into `src/dev-ready/`.
 
 ## How to use it with the agent

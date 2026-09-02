@@ -24,6 +24,9 @@ Vite + React + TypeScript + Tailwind CSS **v4** (via `@tailwindcss/vite`) + `rea
 - They are **auto-discovered** by `src/experiments/registry.ts` via `import.meta.glob`.
   **Never hand-edit the registry** to add an experiment — just create the folder.
 - `src/experiments/_template/` is the copy-me starter. Do not register or route it.
+- `src/ideas/catalog.ts` backs the `/ideas` page (idea prompts for designers). In-app only — no
+  matching doc. Extend the catalog there; keep each prompt ending with the "follow DESIGN.md or
+  override?" question.
 
 ## Design rules
 

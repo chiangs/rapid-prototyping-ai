@@ -1,6 +1,7 @@
 import { Link, Route, Routes, useParams } from "react-router-dom";
 import { getExperiment } from "@/experiments/registry";
 import Gallery from "@/pages/Gallery";
+import Ideas from "@/pages/Ideas";
 
 // All user-facing text for this file, in one place.
 const copy = {
@@ -15,6 +16,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Gallery />} />
+      <Route path="/ideas" element={<Ideas />} />
       <Route path="/x/:slug" element={<ExperimentRoute />} />
       <Route path="*" element={<NotFound title={copy.pageNotFoundTitle} />} />
     </Routes>

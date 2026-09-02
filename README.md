@@ -40,6 +40,10 @@ anything.
 
 ## How to start an experiment
 
+Not sure what to build? Open **`/ideas`** in the running app (the "Browse ideas" link on the
+gallery) for a catalog of prompts — copy one straight to your agent, or copy a request that has the
+agent draft a prompt for you to review.
+
 1. **Decide** whether your idea is a **component** or a **layout**.
 2. **Copy** `src/experiments/_template/` into `src/experiments/components/` or
    `src/experiments/layouts/`, and rename the folder to your kebab-case slug (e.g. `pricing-table`).

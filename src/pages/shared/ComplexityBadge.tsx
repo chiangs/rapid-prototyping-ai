@@ -1,7 +1,11 @@
 import { cn } from "@/lib/cn";
-import type { Experiment } from "@/experiments/registry";
 
-export function ComplexityBadge({ complexity }: { complexity: Experiment["complexity"] }) {
+const copy = {
+  simple: "simple",
+  complex: "complex",
+} as const;
+
+export function ComplexityBadge({ complexity }: { complexity: "simple" | "complex" }) {
   return (
     <span
       className={cn(
@@ -11,7 +15,7 @@ export function ComplexityBadge({ complexity }: { complexity: Experiment["comple
           : "bg-brand-50 text-brand-700 ring-1 ring-brand-100",
       )}
     >
-      {complexity}
+      {copy[complexity]}
     </span>
   );
 }
