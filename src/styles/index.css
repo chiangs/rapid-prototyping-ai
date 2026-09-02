@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+/*
+  DESIGN TOKENS
+  -------------
+  In Tailwind v4 the values below automatically generate utility classes:
+    --color-brand-500  -> bg-brand-500 / text-brand-500 / border-brand-500 ...
+    --radius-card       -> rounded-card
+    --radius-control    -> rounded-control
+
+  Designers: edit these tokens to mirror your Figma styles. Changing a value
+  here updates every component that uses the matching utility. Do NOT create a
+  tailwind.config.js — this @theme block is the single source of truth.
+
+  Spacing: use Tailwind's default 4px scale (p-2 = 8px, gap-4 = 16px, ...).
+  Type: rely on Tailwind's default type scale unless you add tokens here.
+*/
+@theme {
+  /* Brand color scale — brand-500 (#2C6BED) matches the class example */
+  --color-brand-50: #eef4fe;
+  --color-brand-100: #d9e6fd;
+  --color-brand-500: #2c6bed;
+  --color-brand-600: #1f57c8;
+  --color-brand-700: #1a469e;
+
+  /* Neutrals */
+  --color-ink: #0f172a; /* primary text / high-contrast surfaces */
+  --color-muted: #64748b; /* secondary text */
+  --color-surface: #ffffff; /* card / panel background */
+  --color-canvas: #f8fafc; /* app background */
+  --color-border: #e2e8f0; /* hairline borders */
+
+  /* Radius */
+  --radius-card: 0.75rem;
+  --radius-control: 0.5rem;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
