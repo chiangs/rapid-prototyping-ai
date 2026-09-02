@@ -11,15 +11,23 @@
 //
 // 3. Build your idea inside the default component. Follow docs/DESIGN.md:
 //    token utilities (bg-brand-500, rounded-card…), visible hover + focus-visible
-//    states, AA contrast, and `cn()` for conditional classes.
+//    states, AA contrast, `cn()` for conditional classes, values computed above
+//    the return, one component per file, and user-facing text in the `copy` block.
 //
 // 4. Save. It appears in the gallery automatically — no registry edits.
 //
 // This `_template/` folder itself is NOT registered or routed (it lives outside
 // components/ and layouts/), so leave it here for the next person.
+//
+// OR have agent reference this in context when making new experiments.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import type { ExperimentMeta } from "@/experiments/registry";
+
+// All user-facing text for this experiment, in one place.
+const copy = {
+  placeholder: "Start building here.",
+} as const;
 
 export const meta = {
   title: "Untitled experiment",
@@ -31,7 +39,7 @@ export const meta = {
 export default function Experiment() {
   return (
     <div className="flex min-h-64 items-center justify-center rounded-card border border-dashed border-border text-sm text-muted">
-      Start building here.
+      {copy.placeholder}
     </div>
   );
 }

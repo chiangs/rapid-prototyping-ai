@@ -10,7 +10,7 @@ enforce on their own, written down so every experiment stays consistent.
 
 - **Skim it** before starting a new experiment.
 - **Reference it** when reviewing what the agent produced.
-- **Check against it** before promoting an experiment into `src/components/` or `src/layouts/`.
+- **Check against it** before promoting an experiment into `src/dev-ready/`.
 
 ## How to use it with the agent
 

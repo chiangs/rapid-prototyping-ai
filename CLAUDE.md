@@ -29,7 +29,8 @@ Vite + React + TypeScript + Tailwind CSS **v4** (via `@tailwindcss/vite`) + `rea
 
 **ALWAYS follow `docs/DESIGN.md`** when generating or editing experiments: 4px spacing scale,
 required hover + `focus-visible` states, non-interactive disabled states, WCAG AA contrast,
-token-first styling, and `variant` / `size` / `state` prop naming.
+token-first styling, declarative JSX (compute values above the `return`), one component per file
+(sub-components get their own file), and `variant` / `size` / `state` prop naming.
 
 ## Styling
 
@@ -38,8 +39,9 @@ hex/rem. Use `cn()` for conditional classes.
 
 ## Promotion
 
-Pieces approved for further development move to `src/components/` or `src/layouts/`, made generic and
-props-driven (no mock data). Keep `main` runnable at all times.
+Pieces approved for further development move to `src/dev-ready/components/` or
+`src/dev-ready/layouts/`, made generic and props-driven (no mock data). Keep `main` runnable at all
+times.
 
 ## Constraints
 

@@ -36,6 +36,48 @@ never duplicates their values.
 - Use `cn()` (`src/lib/cn.ts`) for conditional and merged classes — never string-concatenate
   Tailwind classes by hand.
 
+## Keep JSX declarative
+
+Do the thinking _above_ the `return`, not inside the markup. JSX should read as structure — what
+renders — not as a place where values get computed or branches get resolved.
+
+- Compute derived strings, numbers, and flags as named `const`s in the component body, then
+  interpolate them: `{emptyMessage}`, not `{active !== "All" && ` in ${active}`}` mid-tag.
+- When a branch swaps whole subtrees, assign the chosen element to a `const` (e.g.
+  `const body = isEmpty ? <EmptyState … /> : <ResultGrid … />`) and render `{body}` — avoid large
+  `? ( … ) : ( … )` blocks sitting inline in the tree.
+- **Build lists above the `return` too.** Map data to elements in a named `const`
+  (`const categoryButtons = CATEGORIES.map((c) => <CategoryButton key={c} … />)`) and render
+  `{categoryButtons}` — no `.map()` calls inside the JSX tree.
+- Extract a repeated item into its own small component (its own file — see below) and map data onto
+  it, rather than an inline arrow with a multi-line body.
+- Still fine inline: plain interpolation (`{project.name}`) and a single `{cond && <Icon />}`.
+
+## Component files
+
+- **One component per file.** Every sub-component gets its own file named after it
+  (`ProjectCard.tsx`), not a nested `function ProjectCard()` further down the parent file.
+- The entry file (`Experiment.tsx`, or a promoted component) keeps only its own top-level component
+  plus that component's data, state, and layout — then imports the pieces.
+- Non-component shared values (types, constant lists, helpers) go in a plain `.ts` file
+  (`categories.ts`), not exported alongside a component — that keeps Fast Refresh working.
+- Co-locate: sub-component files live in the same folder as the experiment (or beside the promoted
+  component), so the whole unit moves together during promotion.
+
+## Copy
+
+- No user-facing text as bare string literals in JSX. Labels, placeholders, headings, button text,
+  empty/error messages, and `aria-label`s all become named constants.
+- Put them in a `const copy = { … }` object at the top of the file, right below the imports —
+  **not** a separate `copy.ts` module. Reference as `{copy.filterLabel}`. A sub-component file keeps
+  its own `copy` block for the text it renders.
+- For text with runtime values, use a function entry: `noMatches: (q: string) => \`No matches for “${q}”.\``.
+- This keeps a file's wording in one glance-able place, makes a copy review a top-of-file edit, and
+  keeps the JSX about structure.
+- Not copy — leave these where they are: `className` strings, route paths, `key`s, and enum-like
+  values (category names, variant names). `meta` title/description is registry data, not in-component
+  copy.
+
 ## Naming
 
 - Variant props use clear, consistent names: **`variant`**, **`size`**, **`state`**.

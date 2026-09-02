@@ -1,4 +1,4 @@
-# src/components/
+# src/dev-ready/components/
 
 **Promoted, production-candidate shared components.** Starts empty.
 

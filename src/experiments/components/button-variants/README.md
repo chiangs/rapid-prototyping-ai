@@ -5,6 +5,7 @@ typed set of options.
 
 `Button.tsx` is a token-first button with `variant` (primary / secondary / ghost),
 `size` (sm / md / lg), and a disabled state, all typed with TS unions and composed with `cn()`.
-`Experiment.tsx` renders every variant × size plus the disabled state so you can eyeball them together.
+`Experiment.tsx` renders every variant × size plus the disabled state so you can eyeball them
+together; `VariantRow.tsx` is the per-variant row it maps over.
 
-If approved, `Button.tsx` is the piece to promote into `src/components/`.
+If approved, `Button.tsx` is the piece to promote into `src/dev-ready/components/`.

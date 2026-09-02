@@ -2,12 +2,21 @@ import { Link, Route, Routes, useParams } from "react-router-dom";
 import { getExperiment } from "@/experiments/registry";
 import Gallery from "@/pages/Gallery";
 
+// All user-facing text for this file, in one place.
+const copy = {
+  backToGallery: "← Gallery",
+  pageNotFoundTitle: "Page not found",
+  experimentNotFoundTitle: "Experiment not found",
+  experimentNotFoundDetail: (slug: string) => `No experiment is registered for "/x/${slug}".`,
+  notFoundAction: "Back to the gallery",
+} as const;
+
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Gallery />} />
       <Route path="/x/:slug" element={<ExperimentRoute />} />
-      <Route path="*" element={<NotFound title="Page not found" />} />
+      <Route path="*" element={<NotFound title={copy.pageNotFoundTitle} />} />
     </Routes>
   );
 }
@@ -19,8 +28,8 @@ function ExperimentRoute() {
   if (!experiment) {
     return (
       <NotFound
-        title="Experiment not found"
-        detail={`No experiment is registered for "/x/${slug ?? ""}".`}
+        title={copy.experimentNotFoundTitle}
+        detail={copy.experimentNotFoundDetail(slug ?? "")}
       />
     );
   }
@@ -35,7 +44,7 @@ function ExperimentRoute() {
             to="/"
             className="rounded-control px-2 py-1 text-sm font-medium text-brand-600 hover:bg-brand-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
           >
-            ← Gallery
+            {copy.backToGallery}
           </Link>
           <div>
             <h1 className="text-lg font-semibold text-ink">{title}</h1>
@@ -60,7 +69,7 @@ function NotFound({ title, detail }: { title: string; detail?: string }) {
           to="/"
           className="mt-6 inline-flex rounded-control bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
         >
-          Back to the gallery
+          {copy.notFoundAction}
         </Link>
       </div>
     </main>

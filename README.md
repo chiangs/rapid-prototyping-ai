@@ -23,15 +23,16 @@ src/
 │   ├── _template/           Copy-me starter (component or layout)
 │   ├── components/<slug>/    Component experiments (simple + complex)
 │   └── layouts/<slug>/       Layout / navigation experiments
-├── components/            PROMOTED, production-candidate shared components (starts empty)
-├── layouts/              PROMOTED layout shells (starts empty)
+├── dev-ready/             PROMOTED, production-candidate pieces (starts empty)
+│   ├── components/          Promoted shared components
+│   └── layouts/             Promoted layout shells
 ├── lib/cn.ts             Classname helper (clsx + tailwind-merge)
 └── styles/index.css      Tailwind import + design tokens (@theme)
 ```
 
 **The key distinction:** `src/experiments/**` is where you explore freely and throw things away.
-`src/components/` and `src/layouts/` are the promoted homes for pieces approved for further
-development. Keep them separate.
+`src/dev-ready/**` is the promoted home for pieces approved for further development. Keep them
+separate.
 
 Each experiment lives in its own folder with an `Experiment.tsx` and a short `README.md`, and gets its
 own URL: `/x/<slug>`. The gallery discovers experiments automatically — you never hand-register
@@ -54,14 +55,15 @@ The promotion workflow:
 
 1. **Tidy up.** Remove dead code. Confirm it follows `docs/DESIGN.md` — tokens not hardcoded,
    hover + focus-visible states present, AA contrast.
-2. **Promote the reusable piece.** Move the component into `src/components/` (or the layout into
-   `src/layouts/`), making it generic and props-driven — no mock data, no demo-only scaffolding.
+2. **Promote the reusable piece.** Move the component into `src/dev-ready/components/` (or the layout
+   into `src/dev-ready/layouts/`), making it generic and props-driven — no mock data, no demo-only
+   scaffolding.
 3. **Leave a thin demo behind (optional).** The experiment can import the promoted component so the
    gallery still shows it — or delete the experiment if it was throwaway.
 4. **Branch + commit** on `exp/<slug>`, then open a PR against your own repo.
-5. **Hand off to the developer.** Share the branch/PR. The piece now lives in `src/components/` or
-   `src/layouts/` and the experiment's `README.md` captures the intent, so the developer has a clean,
-   bounded starting point. Point them to `docs/DESIGN.md` for the rules.
+5. **Hand off to the developer.** Share the branch/PR. The piece now lives in `src/dev-ready/` and the
+   experiment's `README.md` captures the intent, so the developer has a clean, bounded starting point.
+   Point them to `docs/DESIGN.md` for the rules.
 
 ## Design tokens
 
@@ -78,7 +80,7 @@ specific. Example prompts:
 
 - "In experiments/layouts/marketing-nav, build a sticky top nav with a mobile menu — follow docs/DESIGN.md."
 - "Make the filterable-card-grid experiment also filter by owner. Keep it self-contained."
-- "Promote button-variants: move Button.tsx into src/components/, keep the experiment as a thin demo."
+- "Promote button-variants: move Button.tsx into src/dev-ready/components/, keep the experiment as a thin demo."
 
 ## Branching strategy
 

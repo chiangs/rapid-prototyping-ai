@@ -1,5 +1,12 @@
 import type { ExperimentMeta } from "@/experiments/registry";
 import { Button, type ButtonSize, type ButtonVariant } from "./Button";
+import { VariantRow } from "./VariantRow";
+
+// All user-facing text for this experiment, in one place.
+const copy = {
+  disabledHeading: "Disabled",
+  disabledButtonLabel: (variant: string) => `${variant} disabled`,
+} as const;
 
 export const meta = {
   title: "Button variants",
@@ -12,35 +19,25 @@ const variants: ButtonVariant[] = ["primary", "secondary", "ghost"];
 const sizes: ButtonSize[] = ["sm", "md", "lg"];
 
 export default function Experiment() {
+  const variantRows = variants.map((variant) => (
+    <VariantRow key={variant} variant={variant} sizes={sizes} />
+  ));
+
+  const disabledButtons = variants.map((variant) => (
+    <Button key={variant} variant={variant} disabled>
+      {copy.disabledButtonLabel(variant)}
+    </Button>
+  ));
+
   return (
     <div className="space-y-10">
-      {variants.map((variant) => (
-        <section key={variant}>
-          <h2 className="mb-3 text-sm font-semibold tracking-wide text-muted uppercase">
-            {variant}
-          </h2>
-          <div className="flex flex-wrap items-center gap-4">
-            {sizes.map((size) => (
-              <div key={size} className="flex flex-col items-center gap-2">
-                <Button variant={variant} size={size}>
-                  {`${size} button`}
-                </Button>
-                <span className="text-xs text-muted">{size}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-      ))}
+      {variantRows}
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold tracking-wide text-muted uppercase">Disabled</h2>
-        <div className="flex flex-wrap items-center gap-4">
-          {variants.map((variant) => (
-            <Button key={variant} variant={variant} disabled>
-              {`${variant} disabled`}
-            </Button>
-          ))}
-        </div>
+        <h2 className="mb-3 text-sm font-semibold tracking-wide text-muted uppercase">
+          {copy.disabledHeading}
+        </h2>
+        <div className="flex flex-wrap items-center gap-4">{disabledButtons}</div>
       </section>
     </div>
   );

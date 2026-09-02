@@ -1,4 +1,4 @@
-# src/layouts/
+# src/dev-ready/layouts/
 
 **Promoted, production-candidate layout shells.** Starts empty.
 
