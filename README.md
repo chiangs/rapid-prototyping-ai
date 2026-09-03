@@ -55,7 +55,10 @@ agent draft a prompt for you to review.
 
 ## When an experiment is approved for further development
 
-The promotion workflow:
+Prompt the agent: **"I want to promote `<experiment>`"**. It reads the piece and asks how much to
+promote — **props-driven** (every tunable value, including anything behind a live control, becomes a
+prop with the approved value as its default) or **as-is** (approved values baked in, only the dynamic
+data/`children` as props) — and whether to leave a thin demo behind. Then it runs this workflow:
 
 1. **Tidy up.** Remove dead code. Confirm it follows `docs/DESIGN.md` — tokens not hardcoded,
    hover + focus-visible states present, AA contrast.
@@ -64,7 +67,9 @@ The promotion workflow:
    scaffolding.
 3. **Leave a thin demo behind (optional).** The experiment can import the promoted component so the
    gallery still shows it — or delete the experiment if it was throwaway.
-4. **Branch + commit** on `exp/<slug>`, then open a PR against your own repo.
+4. **Branch + commit** on a fresh `promote/<slug>` cut from current `main` (not `exp/<slug>` — that's
+   usually already merged). Commits use `promote(<slug>): <what changed>`. Then open a PR against your
+   own repo.
 5. **Hand off to the developer.** Share the branch/PR. The piece now lives in `src/dev-ready/` and the
    experiment's `README.md` captures the intent, so the developer has a clean, bounded starting point.
    Point them to `docs/DESIGN.md` for the rules.
@@ -84,7 +89,7 @@ specific. Example prompts:
 
 - "In experiments/layouts/marketing-nav, build a sticky top nav with a mobile menu — follow docs/DESIGN.md."
 - "Make the filterable-card-grid experiment also filter by owner. Keep it self-contained."
-- "Promote button-variants: move Button.tsx into src/dev-ready/components/, keep the experiment as a thin demo."
+- "I want to promote button-variants." (the agent asks props-driven vs. as-is, and whether to keep a thin demo)
 
 ## Branching strategy
 
@@ -93,7 +98,9 @@ specific. Example prompts:
 - When an experiment is shareable: merge into `main` to keep it in your baseline gallery, or just
   push the `exp/<slug>` branch and share that.
 - Commit convention: **`exp(<slug>): <what changed>`**.
-- Promotion / handoff goes through a PR from `exp/<slug>` (see the promotion workflow above).
+- Promotion to `src/dev-ready/` gets its own branch **`promote/<slug>`** off current `main` (leave the
+  `exp/<slug>` branch as-is), commits **`promote(<slug>): <what changed>`**, handed off via a PR (see
+  the promotion workflow above).
 - Keep it low-ceremony: no `develop` / `release` / `hotfix` branches.
 
 ## Questions?

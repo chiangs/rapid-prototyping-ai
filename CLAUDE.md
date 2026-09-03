@@ -62,6 +62,25 @@ Pieces approved for further development move to `src/dev-ready/components/` or
 times. Leave `Experiment.tsx`, `controls/`, and any showcase-only backdrop/mock behind — only the
 piece itself is promoted.
 
+Promotion happens on its own branch `promote/<slug>` cut from current `main` (not the `exp/<slug>`
+branch, which is usually already merged); commits use `promote(<slug>): <what changed>`.
+
+### When a designer says "I want to promote `<experiment>`"
+
+1. **Read the whole experiment first** — `Experiment.tsx`, every sub-component, `controls/`, and
+   `README.md` — so you know the piece, its current props, and which values are tunable (live
+   controls or otherwise: durations, sizes, counts, colors, easings, toggles…).
+2. **Ask the designer how much to promote** before moving anything:
+   - **Props-driven** — every tunable value becomes a component prop, with the approved value as its
+     default. The `controls/` UI still stays behind; the prop surface is what replaces it.
+   - **As-is** — the approved values are baked in as constants; the promoted component takes only the
+     genuinely dynamic inputs (data arrays, `children`, event handlers).
+   - Also confirm: leave a thin demo experiment behind (imports the promoted component so the gallery
+     still shows it), or delete the experiment folder?
+3. Then do the move on `promote/<slug>`: relocate the piece (plus co-located sub-components / `.ts`
+   helpers) to `src/dev-ready/components/` or `.../layouts/`, drop mock data / `meta` / `controls/` /
+   showcase backdrop, check the result against `docs/DESIGN.md`, keep `main` runnable.
+
 ## Constraints
 
 - Do **not** add servers, backends, databases, API routes, or heavy dependencies. Keep it minimal.
@@ -72,4 +91,6 @@ piece itself is promoted.
 - `main` is always known-good.
 - One short-lived branch per exploration: `exp/<slug>`, created off `main`.
 - Commit convention: `exp(<slug>): <what changed>`.
+- Promoting an experiment to `src/dev-ready/` gets its own branch `promote/<slug>` off `main`,
+  commits `promote(<slug>): <what changed>`.
 - No `develop` / `release` / `hotfix` branches.
