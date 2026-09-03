@@ -36,6 +36,18 @@ never duplicates their values.
 - Use `cn()` (`src/lib/cn.ts`) for conditional and merged classes — never string-concatenate
   Tailwind classes by hand.
 
+## Keep it simple
+
+Every prototype here gets read by a developer who will re-implement it in a production codebase.
+Optimize for that reader, not for cleverness.
+
+- Prefer the obvious approach over the clever one. Don't reach for an abstraction until the same
+  thing shows up a second time.
+- Keep indirection shallow — a component should read top to bottom without chasing through layers of
+  wrappers, custom hooks, or helper modules to understand what it does.
+- Don't add a dependency for something a few lines of plain code would do (see also `CLAUDE.md`).
+- Small, single-purpose functions and components with descriptive names.
+
 ## Keep JSX declarative
 
 Do the thinking _above_ the `return`, not inside the markup. JSX should read as structure — what
@@ -51,7 +63,10 @@ renders — not as a place where values get computed or branches get resolved.
   `{categoryButtons}` — no `.map()` calls inside the JSX tree.
 - Extract a repeated item into its own small component (its own file — see below) and map data onto
   it, rather than an inline arrow with a multi-line body.
-- Still fine inline: plain interpolation (`{project.name}`) and a single `{cond && <Icon />}`.
+- **Hoist every conditional render.** No `{flag && <X />}` and no `{cond ? … : …}` in the JSX tree —
+  compute the element (or `null`) as a named `const` above the `return`
+  (`const clearButton = query ? <ClearButton … /> : null`) and render `{clearButton}`.
+- Still fine inline: plain interpolation like `{project.name}`.
 
 ## Component files
 

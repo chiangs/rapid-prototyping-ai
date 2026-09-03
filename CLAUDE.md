@@ -32,7 +32,9 @@ Vite + React + TypeScript + Tailwind CSS **v4** (via `@tailwindcss/vite`) + `rea
 
 **ALWAYS follow `docs/DESIGN.md`** when generating or editing experiments: 4px spacing scale,
 required hover + `focus-visible` states, non-interactive disabled states, WCAG AA contrast,
-token-first styling, declarative JSX (compute values above the `return`), one component per file
+token-first styling, simple readable code a developer can re-implement in production (no needless
+abstraction, indirection, or dependencies), declarative JSX (compute all values **and conditional
+renders** above the `return` — no `&&` or ternary branches in the JSX tree), one component per file
 (sub-components get their own file), and `variant` / `size` / `state` prop naming.
 
 ## Styling
