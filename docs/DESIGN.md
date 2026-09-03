@@ -29,6 +29,22 @@ never duplicates their values.
 - Images and icons have accessible labels (`alt`, `aria-label`); decorative icons are hidden from
   assistive tech (`aria-hidden`).
 
+## Cross-browser compatibility
+
+Prototypes must render and behave correctly in the current versions of **Chrome, Firefox, and
+Safari** (including iOS Safari where the idea is mobile-facing). A developer re-implements this for
+production — it can't lean on an effect that only works in one engine.
+
+- Prefer widely-supported CSS and web APIs. Verify support before using anything recent or
+  engine-specific (`backdrop-filter`, `:has()`, container queries, subgrid, View Transitions,
+  scroll-driven animations, SVG filters, `mask`, anything `-webkit-` prefixed…).
+- **Flag what you're unsure about.** If an implementation may not hold up across all three engines,
+  or you worked around an engine bug, say so explicitly to the designer ("Safari doesn't support X —
+  this uses a fallback / needs testing / needs further research") and record it under a **Browser
+  note** heading in the experiment's `README.md`.
+- When a technique is known to be uneven, add the fallback rather than assume someone will test
+  every browser.
+
 ## Styling
 
 - **Token-first:** prefer token utilities (`bg-brand-500`, `text-ink`, `rounded-card`,

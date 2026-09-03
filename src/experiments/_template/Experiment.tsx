@@ -13,6 +13,8 @@
 //    token utilities (bg-brand-500, rounded-card…), visible hover + focus-visible
 //    states, AA contrast, `cn()` for conditional classes, values computed above
 //    the return, one component per file, and user-facing text in the `copy` block.
+//    Keep it working in current Chrome, Firefox, and Safari — flag anything you're
+//    unsure will hold up across all three (see docs/DESIGN.md "Browser note").
 //
 // 4. If the idea has settings worth tuning live (durations, sizes, blur, counts,
 //    colors, easings, toggles…), ASK THE DESIGNER which to expose as on-screen
