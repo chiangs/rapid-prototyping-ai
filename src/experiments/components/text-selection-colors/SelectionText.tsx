@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 
 // All user-facing text for this component, in one place.
 const copy = {
+  heading: "Lorem ipsum",
   paragraph:
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
     "incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud " +
@@ -30,6 +31,9 @@ export function SelectionText({
   return (
     <div className="selection-demo rounded-card border border-border bg-white p-8">
       <style>{selectionCss}</style>
+      <h2 className="mb-4 font-serif text-5xl font-semibold tracking-tight text-ink">
+        {copy.heading}
+      </h2>
       <p className="max-w-prose text-ink" style={paragraphStyle}>
         {copy.paragraph}
       </p>
