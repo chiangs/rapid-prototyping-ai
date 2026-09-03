@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 
 // All user-facing text for this component, in one place.
 const copy = {
+  caption: "Custom ::selection highlight",
   heading: "Lorem ipsum",
   paragraph:
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
@@ -31,6 +32,9 @@ export function SelectionText({
   return (
     <div className="selection-demo rounded-card border border-border bg-white p-8">
       <style>{selectionCss}</style>
+      <p className="mb-3 text-xs font-semibold tracking-wide text-muted uppercase">
+        {copy.caption}
+      </p>
       <h2 className="mb-4 font-serif text-5xl font-semibold tracking-tight text-ink">
         {copy.heading}
       </h2>

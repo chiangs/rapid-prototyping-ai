@@ -1,13 +1,14 @@
 import { useState } from "react";
 import type { ExperimentMeta } from "@/experiments/registry";
 import { PALETTE, readableTextOn } from "./palette";
+import { PlainText } from "./PlainText";
 import { SelectionText } from "./SelectionText";
 import { SwatchPicker } from "./SwatchPicker";
 import { TypographyControls } from "./controls/TypographyControls";
 
 // All user-facing text for this experiment, in one place.
 const copy = {
-  hint: "Select the text above to see the highlight colour.",
+  hint: "Select text in either box — only the first follows the swatch; the second keeps the browser default.",
 } as const;
 
 export const meta = {
@@ -32,6 +33,8 @@ export default function Experiment() {
         background={color}
         foreground={foreground}
       />
+
+      <PlainText />
 
       <p className="text-sm text-muted">{copy.hint}</p>
 
