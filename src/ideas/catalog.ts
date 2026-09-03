@@ -28,6 +28,14 @@ const alignmentAsk =
   "Before you build, tell me whether this should follow docs/DESIGN.md or if it's a " +
   "special case that should override it — and why.";
 
+const controlsAsk =
+  "Also ask me which tunable settings (if any) I want as on-screen controls — sliders / " +
+  "toggles for things like timing, size, spacing, counts, colors — with their range and " +
+  "default, so I can iterate on the feel without re-prompting you. Put those in a `controls/` " +
+  "subfolder; they are not part of the piece.";
+
+const preBuildAsks = `${alignmentAsk}\n\n${controlsAsk}`;
+
 /** A request the designer hands to their agent to draft a prompt they'll review and edit. */
 export function draftRequest(idea: Idea): string {
   return `I want to prototype "${idea.title}" in this sandbox (see README.md and docs/DESIGN.md).
@@ -38,7 +46,9 @@ Draft an experiment prompt for me to review and edit before any code is written.
 - the local mock data it needs (no network)
 - the meta block: title, description, complexity "${idea.complexity}", tags
 
-Then ask me whether it should follow docs/DESIGN.md or if this is a special case that should override it.`;
+Then ask me (a) whether it should follow docs/DESIGN.md or if this is a special case that should
+override it, and (b) which tunable settings, if any, I want as on-screen controls (with range and
+default) so I can iterate on the feel — those go in a \`controls/\` subfolder, separate from the piece.`;
 }
 
 export const ideaCategories: IdeaCategory[] = [
@@ -53,7 +63,7 @@ export const ideaCategories: IdeaCategory[] = [
         slug: "segmented-control",
         prompt: `In src/experiments/components/segmented-control, build a segmented control: 2–4 options with one selected, arrow-key navigation between options, and clear hover and focus-visible states. Local state only, no network. Set meta: title "Segmented control", description "A single-select segmented control with keyboard support.", complexity "simple", tags ["design-system"].
 
-${alignmentAsk}`,
+${preBuildAsks}`,
       },
       {
         title: "Input field with label, hint, error, and disabled states",
@@ -87,7 +97,7 @@ ${alignmentAsk}`,
         slug: "settings-form",
         prompt: `In src/experiments/components/settings-form, build a settings form with 2–3 grouped sections (inputs, toggles, a select) and a save bar that sticks to the bottom and only enables when something changed. Track dirty state locally; no network. Set meta: title "Settings form", description "Grouped settings with a dirty-aware sticky save bar.", complexity "complex", tags ["forms", "state"].
 
-${alignmentAsk}`,
+${preBuildAsks}`,
       },
       {
         title: "Multi-step form wizard with progress",
@@ -126,7 +136,7 @@ ${alignmentAsk}`,
         slug: "sortable-table",
         prompt: `In src/experiments/components/sortable-table, build a data table over ~12 rows of local mock data with sortable columns (click a header to toggle asc/desc), a sticky header, and row selection via checkboxes with a "select all". No network. Set meta: title "Sortable data table", description "Client-sorted table with sticky header and row selection.", complexity "complex", tags ["data", "state"].
 
-${alignmentAsk}`,
+${preBuildAsks}`,
       },
       {
         title: "Card grid with a density toggle",
@@ -165,7 +175,7 @@ ${alignmentAsk}`,
         slug: "collapsible-sidebar",
         prompt: `In src/experiments/layouts/collapsible-sidebar, build an app shell whose sidebar toggles between full (icon + label) and a collapsed icon-only rail, with the content region reflowing. Keep the collapsed state in local state; make it responsive (sidebar becomes a top bar under md). No network. Set meta: title "Collapsible sidebar", description "App shell with a full / icon-rail sidebar toggle.", complexity "complex", tags ["navigation", "layout"].
 
-${alignmentAsk}`,
+${preBuildAsks}`,
       },
       {
         title: "Top nav with a URL-synced tab bar",
@@ -204,7 +214,7 @@ ${alignmentAsk}`,
         slug: "landing-page",
         prompt: `In src/experiments/layouts/landing-page, build a marketing landing page: hero (headline, subhead, CTA), a 3-up feature grid, a testimonial, and a closing CTA band. Responsive, static content, no network. Set meta: title "Landing page", description "Hero, feature grid, testimonial, and CTA sections.", complexity "complex", tags ["marketing", "layout"].
 
-${alignmentAsk}`,
+${preBuildAsks}`,
       },
       {
         title: "Pricing page with a monthly / annual toggle",
@@ -237,7 +247,7 @@ ${alignmentAsk}`,
         slug: "onboarding-checklist",
         prompt: `In src/experiments/layouts/onboarding-checklist, build a first-run checklist of 4–5 steps that shows progress (e.g. "2 of 5"), lets you check items off, and celebrates completion. Hold progress in local state (resets on reload). No network. Set meta: title "Onboarding checklist", description "A progress-tracking first-run checklist.", complexity "complex", tags ["onboarding", "state"].
 
-${alignmentAsk}`,
+${preBuildAsks}`,
       },
       {
         title: "Product tour with spotlight and step tooltips",
@@ -270,7 +280,7 @@ ${alignmentAsk}`,
         slug: "analytics-overview",
         prompt: `In src/experiments/layouts/analytics-overview, build an analytics dashboard: a row of 4 KPI tiles with deltas, small trend sparklines, and one larger chart, all from local mock data. No network. If you add charts, follow the dataviz guidance. Set meta: title "Analytics overview", description "KPI tiles, sparklines, and a main chart over mock data.", complexity "complex", tags ["dashboard", "data-viz"].
 
-${alignmentAsk}`,
+${preBuildAsks}`,
       },
       {
         title: "Filterable date-range dashboard header",
@@ -303,7 +313,7 @@ ${alignmentAsk}`,
         slug: "card-interaction",
         prompt: `In src/experiments/components/card-interaction, build one card shown three ways so its hover, press, and focus-visible treatments can be compared side by side — vary elevation, border, and transition timing. No network. Set meta: title "Card interaction study", description "Compare hover / press / focus treatments on a card.", complexity "simple", tags ["motion", "states"].
 
-${alignmentAsk}`,
+${preBuildAsks}`,
       },
       {
         title: "List reorder animation (add / remove / move)",

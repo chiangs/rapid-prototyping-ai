@@ -28,6 +28,18 @@ Vite + React + TypeScript + Tailwind CSS **v4** (via `@tailwindcss/vite`) + `rea
   matching doc. Extend the catalog there; keep each prompt ending with the "follow DESIGN.md or
   override?" question.
 
+### Live controls
+
+- **Before building an experiment with tunable settings** (durations, sizes, blur radii, counts,
+  colors, easings, toggles…), **ask the designer which to expose as on-screen controls** and their
+  range / default / step. Controls let them iterate on the feel without re-prompting you. If the
+  answer is "none", skip them.
+- Control components live in a **`controls/` subfolder** inside the experiment
+  (`<slug>/controls/GlassControls.tsx`, …). They are scaffolding, **not** part of the piece — keeping
+  them separate keeps promotion a clean folder move.
+- `Experiment.tsx` owns the control state (`useState`) and passes values down to both the piece and
+  the controls; the controls stay presentational (value + `onChange` props).
+
 ## Design rules
 
 **ALWAYS follow `docs/DESIGN.md`** when generating or editing experiments: 4px spacing scale,
@@ -46,7 +58,8 @@ hex/rem. Use `cn()` for conditional classes.
 
 Pieces approved for further development move to `src/dev-ready/components/` or
 `src/dev-ready/layouts/`, made generic and props-driven (no mock data). Keep `main` runnable at all
-times.
+times. Leave `Experiment.tsx`, `controls/`, and any showcase-only backdrop/mock behind — only the
+piece itself is promoted.
 
 ## Constraints
 

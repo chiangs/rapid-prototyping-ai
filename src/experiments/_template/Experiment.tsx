@@ -14,7 +14,13 @@
 //    states, AA contrast, `cn()` for conditional classes, values computed above
 //    the return, one component per file, and user-facing text in the `copy` block.
 //
-// 4. Save. It appears in the gallery automatically — no registry edits.
+// 4. If the idea has settings worth tuning live (durations, sizes, blur, counts,
+//    colors, easings, toggles…), ASK THE DESIGNER which to expose as on-screen
+//    controls and their range / default. Put control components in a `controls/`
+//    subfolder — they're scaffolding, not part of what gets promoted — and drive
+//    them from `useState` here in Experiment.tsx.
+//
+// 5. Save. It appears in the gallery automatically — no registry edits.
 //
 // This `_template/` folder itself is NOT registered or routed (it lives outside
 // components/ and layouts/), so leave it here for the next person.
