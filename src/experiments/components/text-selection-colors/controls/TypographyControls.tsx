@@ -16,7 +16,7 @@ export interface TypographyControlsProps {
 }
 
 const rangeClass =
-  "w-full cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600";
+  "w-full cursor-pointer accent-brand-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600";
 
 export function TypographyControls({
   fontSize,
