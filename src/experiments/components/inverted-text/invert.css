@@ -2,7 +2,7 @@
   Scoped styling for the `inverted-text` experiment.
 
   `.invert-text` is the requested effect: white fill + `mix-blend-mode: difference`
-  so the glyphs subtract whatever color sits behind them. Named `-text` because
+  so the glyphs subtract whatever colour sits behind them. Named `-text` because
   Tailwind v4 already ships an `.invert` filter utility.
 */
 .invert-text {
@@ -79,4 +79,17 @@
   .stage-bg--swirl::after {
     animation: none;
   }
+}
+
+/*
+  "Image" backdrop: a monochrome scene with a single vibrant subject dead centre,
+  so the text reads faintly over the grey field and flips hard over the subject.
+*/
+.stage-bg--image {
+  background: #333333 url("./subject.svg") center / cover no-repeat;
+}
+
+/* Same idea, but a real photograph: a red umbrella in near-white rain. */
+.stage-bg--photo {
+  background: #eeeeee url("./photo.jpg") center 38% / cover no-repeat;
 }

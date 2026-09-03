@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { CodeTab } from "./CodeTab";
 import { CopyButton } from "./CopyButton";
+import { SegmentedButton } from "./SegmentedButton";
 import { CODE_LANG_LABEL, CODE_LANGS, CODE_SAMPLES, type CodeLang } from "./codeSamples";
 
 // All user-facing text this component renders.
@@ -15,12 +15,12 @@ export function CodeSample() {
   const activeCode = CODE_SAMPLES[lang];
 
   const tabs = CODE_LANGS.map((value) => (
-    <CodeTab
+    <SegmentedButton
       key={value}
-      lang={value}
+      size="sm"
       label={CODE_LANG_LABEL[value]}
       isActive={value === lang}
-      onSelect={setLang}
+      onSelect={() => setLang(value)}
     />
   ));
 

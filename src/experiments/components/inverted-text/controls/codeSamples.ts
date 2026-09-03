@@ -11,7 +11,7 @@ export const CODE_LANG_LABEL: Record<CodeLang, string> = {
 
 /**
  * The stripped-down version of this experiment — just enough to reproduce the
- * effect: an opaque stage, a rotating color layer, and the blend-mode text.
+ * effect: an opaque stage, a rotating colour layer, and the blend-mode text.
  */
 export const CODE_SAMPLES: Record<CodeLang, string> = {
   jsx: `function InvertedText() {

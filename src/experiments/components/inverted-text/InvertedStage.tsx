@@ -1,35 +1,33 @@
 import { StageBackground } from "./StageBackground";
-import type { Mode } from "./modes";
+import type { BackdropOptions, Mode } from "./modes";
 import "./invert.css";
 
 // All user-facing text this component renders.
 const copy = {
   word: "INVERT",
   stageLabel: (mode: string) =>
-    `The word “INVERTED” in large type, subtracting the colors of the ${mode} backdrop behind it.`,
+    `The word “INVERTED” in large type, subtracting the colours of the ${mode} backdrop behind it.`,
 } as const;
 
 const MODE_LABEL: Record<Mode, string> = {
   swirl: "circling green, purple and blue",
+  image: "monochrome scene with a vibrant subject at its centre",
   manual: "adjustable dark-to-light",
-  blue: "saturated blue",
-  magenta: "saturated magenta",
+  colour: "a saturated flat colour",
 };
 
-interface InvertedStageProps {
+interface InvertedStageProps extends BackdropOptions {
   mode: Mode;
-  lightness: number;
-  speed: number;
 }
 
-export function InvertedStage({ mode, lightness, speed }: InvertedStageProps) {
+export function InvertedStage({ mode, ...options }: InvertedStageProps) {
   return (
     <div
       role="img"
       aria-label={copy.stageLabel(MODE_LABEL[mode])}
       className="relative isolate flex h-[32rem] min-h-96 items-center justify-center overflow-hidden rounded-card border border-border bg-ink"
     >
-      <StageBackground mode={mode} lightness={lightness} speed={speed} />
+      <StageBackground mode={mode} {...options} />
       <h1 className="invert-text relative px-6 text-center text-[clamp(2.5rem,15vw,11rem)] leading-none font-black tracking-tighter uppercase">
         {copy.word}
       </h1>

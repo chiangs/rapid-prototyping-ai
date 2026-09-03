@@ -1,7 +1,10 @@
 import type { CSSProperties } from "react";
 
 /** Which backdrop the stage is showing behind the inverting text. */
-export type Mode = "swirl" | "manual" | "blue" | "magenta";
+export type Mode = "swirl" | "image" | "manual" | "colour";
+
+/** In `image` mode, which picture to show. */
+export type ImageSource = "illustration" | "photo";
 
 /** Baseline swirl loop length, in seconds, at 100% speed. */
 const SWIRL_BASE_SECONDS = 18;
@@ -11,29 +14,40 @@ export function swirlDuration(speed: number): string {
   return `${Math.round((SWIRL_BASE_SECONDS * 100) / speed)}s`;
 }
 
+/** The knobs that shape a backdrop; only some apply to any given mode. */
+export interface BackdropOptions {
+  /** `manual` mode: neutral grey from black (0) to white (100). */
+  lightness: number;
+  /** `swirl` mode: loop speed as a percentage of the baseline. */
+  speed: number;
+  /** `image` mode: drawn illustration vs. bundled photograph. */
+  imageSource: ImageSource;
+  /** `colour` mode: the chosen flat backdrop colour (any CSS colour string). */
+  colour: string;
+}
+
 interface Background {
-  /** Class applied to the backdrop layer (used for the animated swirl). */
+  /** Class applied to the backdrop layer (swirl animation, image bitmaps). */
   className?: string;
-  /** Inline style for flat-color backdrops and the swirl duration variable. */
+  /** Inline style for flat-colour backdrops and the swirl duration variable. */
   style?: CSSProperties;
 }
 
-/**
- * Resolve the stage backdrop for the current mode. `lightness` (0–100) only
- * matters in `manual` mode; `speed` (percent) only matters in `swirl` mode.
- */
-export function resolveBackground(mode: Mode, lightness: number, speed: number): Background {
+/** Resolve the stage backdrop for the current mode and its options. */
+export function resolveBackground(mode: Mode, options: BackdropOptions): Background {
   switch (mode) {
     case "swirl":
       return {
         className: "stage-bg--swirl",
-        style: { "--swirl-duration": swirlDuration(speed) } as CSSProperties,
+        style: { "--swirl-duration": swirlDuration(options.speed) } as CSSProperties,
+      };
+    case "image":
+      return {
+        className: options.imageSource === "photo" ? "stage-bg--photo" : "stage-bg--image",
       };
     case "manual":
-      return { style: { backgroundColor: `hsl(0 0% ${lightness}%)` } };
-    case "blue":
-      return { style: { backgroundColor: "hsl(226 100% 50%)" } };
-    case "magenta":
-      return { style: { backgroundColor: "hsl(312 100% 50%)" } };
+      return { style: { backgroundColor: `hsl(0 0% ${options.lightness}%)` } };
+    case "colour":
+      return { style: { backgroundColor: options.colour } };
   }
 }
