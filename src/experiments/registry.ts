@@ -13,6 +13,12 @@ export interface ExperimentMeta {
   complexity: "simple" | "complex";
   /** Free-form labels, e.g. ["design-system", "navigation"]. */
   tags: string[];
+  /**
+   * Set true only when this experiment is a thin demo left behind after
+   * promoting its piece to `src/dev-ready/`. Shows a "promoted" badge on the
+   * gallery card. Omit (or leave false) while still in progress.
+   */
+  promoted?: boolean;
 }
 
 /** A fully-resolved experiment record, assembled by the registry. */
@@ -62,10 +68,21 @@ function collect(
   });
 }
 
+/** Sort order for the complexity pill: simple ideas surface first within a category. */
+const complexityOrder: Record<Experiment["complexity"], number> = {
+  simple: 0,
+  complex: 1,
+};
+
 export const experiments: Experiment[] = [
   ...collect(componentModules, "component"),
   ...collect(layoutModules, "layout"),
-].sort((a, b) => a.category.localeCompare(b.category) || a.title.localeCompare(b.title));
+].sort(
+  (a, b) =>
+    a.category.localeCompare(b.category) ||
+    complexityOrder[a.complexity] - complexityOrder[b.complexity] ||
+    a.title.localeCompare(b.title),
+);
 
 /** Look up a single experiment by its slug (used by the /x/:slug route). */
 export function getExperiment(slug: string | undefined): Experiment | undefined {

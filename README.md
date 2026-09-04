@@ -66,7 +66,8 @@ data/`children` as props) — and whether to leave a thin demo behind. Then it r
    into `src/dev-ready/layouts/`), making it generic and props-driven — no mock data, no demo-only
    scaffolding.
 3. **Leave a thin demo behind (optional).** The experiment can import the promoted component so the
-   gallery still shows it — or delete the experiment if it was throwaway.
+   gallery still shows it (set `promoted: true` in its `meta` so the gallery marks it) — or delete
+   the experiment if it was throwaway.
 4. **Branch + commit** on a fresh `promote/<slug>` cut from current `main` (not `exp/<slug>` — that's
    usually already merged). Commits use `promote(<slug>): <what changed>`. Then open a PR against your
    own repo.

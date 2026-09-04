@@ -42,6 +42,7 @@ export const meta = {
   description: "Describe in one sentence what this experiment explores.",
   complexity: "simple", // "simple" | "complex"
   tags: [],
+  // promoted: true, // set this if this file is a thin demo left behind after promotion
 } satisfies ExperimentMeta;
 
 export default function Experiment() {

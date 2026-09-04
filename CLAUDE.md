@@ -76,7 +76,8 @@ branch, which is usually already merged); commits use `promote(<slug>): <what ch
    - **As-is** — the approved values are baked in as constants; the promoted component takes only the
      genuinely dynamic inputs (data arrays, `children`, event handlers).
    - Also confirm: leave a thin demo experiment behind (imports the promoted component so the gallery
-     still shows it), or delete the experiment folder?
+     still shows it — set `promoted: true` in its `meta` export so the gallery card marks it as
+     promoted), or delete the experiment folder?
 3. Then do the move on `promote/<slug>`: relocate the piece (plus co-located sub-components / `.ts`
    helpers) to `src/dev-ready/components/` or `.../layouts/`, drop mock data / `meta` / `controls/` /
    showcase backdrop, check the result against `docs/DESIGN.md`, keep `main` runnable.

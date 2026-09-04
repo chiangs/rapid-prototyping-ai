@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import type { Experiment } from "@/experiments/registry";
 import { ComplexityBadge } from "../shared/ComplexityBadge";
+import { PromotedBadge } from "../shared/PromotedBadge";
 
 export function ExperimentCard({ experiment }: { experiment: Experiment }) {
   const tags = experiment.tags.map((tag) => (
@@ -15,6 +16,8 @@ export function ExperimentCard({ experiment }: { experiment: Experiment }) {
   const tagList =
     tags.length === 0 ? null : <ul className="mt-auto flex flex-wrap gap-1.5 pt-2">{tags}</ul>;
 
+  const promotedBadge = experiment.promoted ? <PromotedBadge /> : null;
+
   return (
     <li>
       <Link
@@ -23,7 +26,10 @@ export function ExperimentCard({ experiment }: { experiment: Experiment }) {
       >
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-medium text-ink">{experiment.title}</h3>
-          <ComplexityBadge complexity={experiment.complexity} />
+          <div className="flex shrink-0 items-center gap-1.5">
+            {promotedBadge}
+            <ComplexityBadge complexity={experiment.complexity} />
+          </div>
         </div>
         <p className="text-sm text-muted">{experiment.description}</p>
         {tagList}
