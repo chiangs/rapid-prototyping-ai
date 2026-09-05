@@ -18,6 +18,8 @@ Vite + React + TypeScript + Tailwind CSS **v4** (via `@tailwindcss/vite`) + `rea
 
 ## Experiments
 
+- **Before creating any files, branch first**: `git checkout -b exp/<slug>` off current `main`.
+  Never create or commit a new experiment's files while sitting on `main` — see Branching below.
 - Live in `src/experiments/components/<slug>/` or `src/experiments/layouts/<slug>/`.
 - Each has an `Experiment.tsx` that exports a named `meta` (`ExperimentMeta`) **and** a default
   component, plus a short `README.md` describing intent.
@@ -90,7 +92,9 @@ branch, which is usually already merged); commits use `promote(<slug>): <what ch
 ## Branching
 
 - `main` is always known-good.
-- One short-lived branch per exploration: `exp/<slug>`, created off `main`.
+- One short-lived branch per exploration: `exp/<slug>`, created off `main`. **Create and switch to
+  this branch before writing any files for a new experiment** — check `git branch --show-current`
+  first if unsure; never leave new experiment files sitting uncommitted on `main`.
 - Commit convention: `exp(<slug>): <what changed>`.
 - Promoting an experiment to `src/dev-ready/` gets its own branch `promote/<slug>` off `main`,
   commits `promote(<slug>): <what changed>`.
