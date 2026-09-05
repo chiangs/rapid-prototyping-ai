@@ -84,6 +84,14 @@ branch, which is usually already merged); commits use `promote(<slug>): <what ch
    helpers) to `src/dev-ready/components/` or `.../layouts/`, drop mock data / `meta` / `controls/` /
    showcase backdrop, check the result against `docs/DESIGN.md`, keep `main` runnable.
 
+## Skills
+
+Repo-specific workflows live as slash-command skills in `.claude/skills/` (`commit`,
+`new-experiment`, `promote`, `accessibility-review`, …) — each folder's `SKILL.md` documents when
+it triggers. **Whenever a new skill folder is added, also add a one-line summary of it to
+`README.md`'s skills section** so designers can see what's available without opening
+`.claude/skills/`.
+
 ## Constraints
 
 - Do **not** add servers, backends, databases, API routes, or heavy dependencies. Keep it minimal.

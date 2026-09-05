@@ -36,8 +36,9 @@ The designer says "I want to promote `<experiment>`" (or equivalent).
 
 5. **Apply the chosen promotion level** (props-driven vs. as-is) from step 2.
 
-6. **Check the result against `docs/DESIGN.md`** (states, contrast, tokens,
-   declarative JSX, one-component-per-file, `copy` object, naming) — promoted code is
+6. **Check the result against `docs/DESIGN.md`** (states, contrast, tokens, semantic
+   HTML/accessibility, declarative JSX, one-component-per-file, `copy` object, naming) —
+   run the `accessibility-review` skill for the accessibility pass — promoted code is
    what a developer re-implements in production.
 
 7. **Keep `main` runnable at all times** — if the demo experiment is being deleted,

@@ -35,16 +35,20 @@ The user asks to build a new experiment idea — "let's create a new X component
 
 4. **Build against `docs/DESIGN.md`:** 4px spacing scale (no arbitrary pixel values),
    visible hover **and** `focus-visible` states on every interactive element,
-   non-interactive disabled states, WCAG AA contrast, token-first styling
-   (`bg-brand-500`, `text-ink`, `rounded-card`, `border-border`, via `cn()` — never
-   hand-concatenated classes), cross-browser support for current Chrome/Firefox/Safari
-   (flag anything uncertain rather than assume it works), declarative JSX (all
-   computation, list-building, and conditional renders hoisted above `return` as named
-   `const`s — no inline `.map()`, `&&`, or ternary branches in the tree), one component
-   per file, a `copy` object for every user-facing string, and `variant`/`size`/`state`
-   prop naming.
+   non-interactive disabled states, semantic HTML over div-soup (native `button`/`a`/
+   headings/landmarks before ARIA) with WCAG Level A as a hard minimum and AA as the
+   target, token-first styling (`bg-brand-500`, `text-ink`, `rounded-card`,
+   `border-border`, via `cn()` — never hand-concatenated classes), cross-browser support
+   for current Chrome/Firefox/Safari (flag anything uncertain rather than assume it
+   works), declarative JSX (all computation, list-building, and conditional renders
+   hoisted above `return` as named `const`s — no inline `.map()`, `&&`, or ternary
+   branches in the tree), one component per file, a `copy` object for every user-facing
+   string, and `variant`/`size`/`state` prop naming.
 
 5. **Write the README.md:** one or two sentences of intent. Add a **Browser note**
-   heading if anything cross-browser-risky was used or flagged in step 4.
+   heading if anything cross-browser-risky was used or flagged in step 4. Add an
+   **Accessibility note** heading if a Level AA gap ships anyway (see `docs/DESIGN.md` →
+   Accessibility → Scope carve-outs) — e.g. a novel interaction with no accessible
+   equivalent yet.
 
 6. **Commit** using the `commit` skill's conventions — `exp(<slug>): <what changed>`.

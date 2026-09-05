@@ -24,10 +24,56 @@ never duplicates their values.
 
 ## Accessibility
 
-- Meet **WCAG AA** contrast (4.5:1 for body text, 3:1 for large text and UI borders).
-- Every interactive element is reachable and operable by keyboard.
-- Images and icons have accessible labels (`alt`, `aria-label`); decorative icons are hidden from
-  assistive tech (`aria-hidden`).
+WCAG 2.1 **Level A is a hard minimum** — every experiment must pass it before it's considered
+done. **Level AA** is the target everywhere else. If a specific AA criterion genuinely can't be
+met (a brand-color contrast miss, a novel interaction with no accessible equivalent yet), it can
+still ship — but flag the gap under an **Accessibility note** heading in the experiment's
+`README.md`, the same pattern as a Browser note (see Cross-browser compatibility, below).
+
+### Semantic HTML first
+
+- Reach for the native element before reaching for ARIA: `button` for anything clickable, `a`
+  for navigation, `nav` / `main` / `header` / `footer` for landmarks, `ul`/`ol` + `li` for
+  lists, `label` wired to its `input` via `htmlFor`/`id`, real heading tags (`h1`–`h6`) in one
+  unbroken order per page — not `div onClick`, `div role="button"`, or a styled `span` standing
+  in for a heading.
+- Add ARIA only to fill a gap plain HTML can't cover (`aria-expanded` on a custom disclosure,
+  `aria-live` on a toast). Don't layer ARIA on top of a native element that already conveys the
+  same role, name, and state.
+
+### Keyboard & focus
+
+- Every interactive element is reachable and operable by keyboard alone — no keyboard traps.
+- Focus order follows visual/reading order. Never remove the focus outline without the visible
+  `focus-visible` replacement already required under States, above.
+
+### Images, icons & structure
+
+- Images and icons that convey meaning have accessible labels (`alt`, `aria-label`); purely
+  decorative icons are hidden from assistive tech (`aria-hidden="true"`) and excluded from the
+  tab order.
+- Relationships — grouped fields, table headers, form errors — are conveyed programmatically,
+  not by color or position alone.
+
+### Contrast
+
+- Meet **WCAG AA** contrast (4.5:1 for body text, 3:1 for large text, icons that convey
+  meaning, and interactive/UI element boundaries).
+- Purely decorative, non-text visuals (background textures, aesthetic color studies, anything
+  marked `aria-hidden`) are exempt. This carve-out doesn't extend to real text or anything
+  interactive.
+
+### Scope carve-outs
+
+- **`controls/` subfolders are exempt.** They're dev-only tuning scaffolding (sliders,
+  toggles) stripped out before promotion (see Component files, below) — never promoted, never
+  seen by an end user.
+- **Novel interactions may ship with a documented gap.** A genuinely experimental interaction
+  (canvas/WebGL generative art, gesture-driven controls with no established accessible pattern)
+  that can't reasonably get full keyboard/ARIA parity may ship without it — call out what's
+  missing under an Accessibility note instead of blocking. This is not a license to skip
+  accessibility on ordinary buttons, forms, nav, or cards — only for interactions with no
+  practical accessible equivalent yet.
 
 ## Cross-browser compatibility
 

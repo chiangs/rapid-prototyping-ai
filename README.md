@@ -92,6 +92,23 @@ specific. Example prompts:
 - "Make the filterable-card-grid experiment also filter by owner. Keep it self-contained."
 - "I want to promote button-variants." (the agent asks props-driven vs. as-is, and whether to keep a thin demo)
 
+## Agent skills
+
+The agent has repo-specific workflows in `.claude/skills/` — invoke by name (`/commit`, etc.) or
+just ask in plain language; the agent picks the matching one. This list is kept in sync whenever a
+skill is added:
+
+- **`new-experiment`** — scaffolds a new experiment from `_template` on its own `exp/<slug>`
+  branch, asks about live controls before building anything tunable, and writes the README.
+- **`promote`** — moves an approved experiment to `src/dev-ready/` on its own `promote/<slug>`
+  branch, after asking how much to promote (props-driven vs. as-is) and whether to leave a thin
+  demo behind.
+- **`accessibility-review`** — checks an experiment or component's semantic HTML and WCAG level A
+  (minimum) / AA (target) against `docs/DESIGN.md`, then reports findings only — no auto-fixing
+  unless asked. Run standalone or before promoting.
+- **`commit`** — always drafts a Conventional Commit message and shows it for approval before
+  running `git commit` — never commits silently.
+
 ## Branching strategy
 
 - **`main`** is always runnable and known-good — never commit broken code to it.
