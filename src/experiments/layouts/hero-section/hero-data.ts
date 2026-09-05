@@ -28,8 +28,18 @@ export const PLACEHOLDER_IMAGES = [
 
 export type PlaceholderImageId = (typeof PLACEHOLDER_IMAGES)[number]["id"];
 
+/** "full-bleed" — image touches the frame edges. "inset" — a spacing gap reveals the black backdrop. */
+export type HeroImageLayout = "full-bleed" | "inset";
+
 export const DEFAULT_HEADLINE = "Make it unforgettable.";
 export const DEFAULT_SUBHEADING = "A short line of supporting copy goes here.";
+export const DEFAULT_IMAGE_LAYOUT: HeroImageLayout = "full-bleed";
+
+export const DEFAULT_INSET_SPACING_X = 24;
+export const DEFAULT_INSET_SPACING_Y = 24;
+export const INSET_SPACING_MIN = 0;
+export const INSET_SPACING_MAX = 64;
+export const INSET_SPACING_STEP = 4;
 
 /** Swap an item with its neighbor in `direction`; no-ops past either end of the list. */
 export function moveItem<T>(items: T[], index: number, direction: "up" | "down"): T[] {

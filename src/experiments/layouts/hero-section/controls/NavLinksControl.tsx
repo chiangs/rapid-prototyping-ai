@@ -27,7 +27,7 @@ export function NavLinksControl({ links, onLabelChange, onMoveUp, onMoveDown }: 
   ));
 
   return (
-    <div role="group" aria-label={copy.groupLabel} className="flex min-w-64 flex-col gap-2">
+    <div role="group" aria-label={copy.groupLabel} className="flex flex-col gap-2">
       <span className="text-xs font-medium uppercase tracking-wide text-muted">{copy.groupLabel}</span>
       {rows}
     </div>

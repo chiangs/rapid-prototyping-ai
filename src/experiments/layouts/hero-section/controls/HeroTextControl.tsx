@@ -17,7 +17,7 @@ export function HeroTextControl({
   onSubheadingChange,
 }: HeroTextControlProps) {
   return (
-    <div className="flex min-w-56 flex-col gap-2">
+    <div className="flex flex-col gap-2">
       <label className="flex flex-col gap-1">
         <span className="text-xs font-medium uppercase tracking-wide text-muted">{copy.headlineLabel}</span>
         <input
