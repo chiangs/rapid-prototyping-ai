@@ -1,6 +1,6 @@
 ---
 name: commit
-description: Use whenever the user asks to commit changes in this repo. Always writes commit messages as Conventional Commits and always shows the suggested message for approval before committing — never commits silently.
+description: Use whenever the user asks to commit changes in this repo, or after finishing a chunk of work when it's unclear if they want it committed yet. Always writes commit messages as Conventional Commits and always shows the suggested message for approval before committing — never commits silently.
 ---
 
 # Commit
@@ -9,6 +9,15 @@ description: Use whenever the user asks to commit changes in this repo. Always w
 
 Any time the user asks to commit — "commit this", "commit these changes", "make a
 commit", `/commit`, etc.
+
+## Don't over-trigger
+
+Finishing a chunk of work is not, by itself, a request to commit. Don't jump straight
+to drafting a commit message just because changes are staged or a feature is done —
+that reads as nagging. If it's genuinely unclear whether the user wants this committed
+now, ask a plain check-in instead: "want me to commit this, or keep editing?" Only move
+on to the steps below (and drafting the actual message) once the user has confirmed —
+either by asking to commit outright, or by answering that check-in.
 
 ## Steps
 
@@ -39,9 +48,10 @@ commit", `/commit`, etc.
    - Keep the required `Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>`
      trailer.
 
-5. **Always show the suggested message before running `git commit`.** Never commit
-   silently on the user's behalf — present the message (summary + body) so they can
-   approve, edit, or reject it, then commit with the approved version.
+5. **Once committing is confirmed, always show the suggested message before running
+   `git commit`.** Never commit silently on the user's behalf — present the message
+   (summary + body) so they can approve, edit, or reject it, then commit with the
+   approved version.
 
 ## Example
 
