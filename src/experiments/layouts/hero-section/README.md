@@ -10,9 +10,11 @@ below. Three heroes, two interaction behaviours:
   image; it eases back to its centre idle pose only when the cursor leaves the window.
 - **`"text-cue"`** (`use-sprite-cue.ts`) — Reader. Plays the sheet forward (frame 0 → last) once
   the cursor settles on real text, and back to frame 0 once it's been away from text for a beat.
-  Word gaps and nav-link gaps under `GAP_MS` don't count as leaving; a `REACTION_MS` delay before
-  starting and a longer `RESET_MS` before reversing make it read like a person actually reaching
-  for their reading glasses.
+  "Over text" is tracked from element enter/leave (`mouseover` / `mouseout`), not from sampling
+  `pointermove`, so it stays correct while the cursor sits still on text. A `REACTION_MS` delay
+  before starting, a `GAP_MS` grace across element boundaries (nav link → nav link), and a longer
+  `RESET_MS` before reversing make it read like a person actually reaching for their reading
+  glasses.
 
 Only the nearest whole frame is ever drawn — no blending between frames — so there's no motion
 ghosting; a few dozen frames per gesture is enough that the stepping isn't noticeable. All the
@@ -54,7 +56,7 @@ frames near source resolution while staying under the 16383px WebP dimension lim
 
 - Canvas 2D + `requestAnimationFrame` + window `pointermove` + `devicePixelRatio` backing-store
   scaling render consistently in current Chrome, Firefox, and Safari. `use-sprite-cue.ts` also
-  uses `document.elementFromPoint` (widely supported) on each pointer move.
+  uses bubbling `mouseover` / `mouseout` on `document` (widely supported).
 - **Touch / iOS Safari:** there is no hover, and `pointermove` only fires mid-drag, so on touch
   devices the hero simply rests on its resting frame — no scrub, no cue. Acceptable for this
   prototype; a mobile-facing production version would need a different input (scroll-linked,
@@ -87,10 +89,12 @@ links keep hover + `focus-visible` states, and heading order (page `h1` → hero
 - `use-sprite-scrub.ts` reads `idleFrame` through a ref (kept current by an effect) so switching
   heroes doesn't restart the rAF loop mid-frame — a deliberate step around the usual "put
   everything in the dependency array" guidance.
-- `use-sprite-cue.ts` decides "is the cursor over text" with an `elementFromPoint` + tag-name
-  heuristic (`A`, `P`, `H1`–`H6`, `LI`, `SPAN`, `BUTTON`, …) rather than precise glyph hit-testing
-  (`caretPositionFromPoint`). It's good enough for the demo; production reading-aware UI would use
-  the caret API or explicit opt-in markers.
+- `use-sprite-cue.ts` decides "is the cursor over text" from the `mouseover` target's tag name
+  (`A`, `P`, `H1`–`H6`, `LI`, `SPAN`, `BUTTON`, …) rather than precise glyph hit-testing
+  (`caretPositionFromPoint`) — so the whole box of a `<p>` counts, padding included. Good enough
+  for the demo; production reading-aware UI would use the caret API or explicit opt-in markers.
+  Tracking element enter/leave rather than sampling pointer position is what lets the cue stay
+  correct while the cursor sits still on text.
 - Adding a sprite hero: create `heroes/<name>/` (`<name>-sprite.ts` + `<Name>Hero.tsx`), add one
   line to `SPRITE_HEROES` in `HeroVisual.tsx`, and add the hero to `HEROES` in `hero-data.ts`. New
   behaviours are a new `use-sprite-*.ts` hook called alongside the others in `SpriteHeroCanvas`.

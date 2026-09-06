@@ -2,12 +2,12 @@ import { useEffect, useRef, type RefObject } from "react";
 import { drawSpriteFrame, sizeCanvasToFrame } from "./sprite-frame";
 
 // Fixed feel for the "put the glasses on to read" cue — tuned once, not controls.
-/** Brief non-text moments (word gaps, nav-link gaps) that don't count as leaving the text. */
+/** Grace for brief non-text moments between elements (nav link → nav link, heading → body). */
 const GAP_MS = 240;
 /** Human beat between the cursor settling on text and the glasses starting to go on. */
 const REACTION_MS = 260;
 /** Time the cursor must stay away from text before the glasses come back off. */
-const RESET_MS = 1300;
+const RESET_MS = 1000;
 /** Playback duration of the put-on gesture (frame 0 → last). */
 const ON_MS = 720;
 /** Playback duration of the take-off gesture (last → frame 0); a touch quicker. */
@@ -38,8 +38,8 @@ const TEXT_TAGS = new Set([
   "CODE",
 ]);
 
-function isOverText(x: number, y: number): boolean {
-  let el = document.elementFromPoint(x, y);
+/** True when `el` (or a close ancestor) is a text element the reader would focus on. */
+function isTextElement(el: Element | null): boolean {
   for (let depth = 0; el && depth < 4; depth += 1, el = el.parentElement) {
     if (el.closest("[data-hero-cue-ignore]")) return false;
     if (TEXT_TAGS.has(el.tagName) && (el.textContent ?? "").trim().length > 0) return true;
@@ -63,13 +63,16 @@ interface SpriteCueOptions {
 }
 
 /**
- * Plays a sprite sheet forward (frame 0 → last) after the cursor settles on real
- * text, and back to frame 0 once it has been away from text for a beat. Word gaps
- * and nav-link gaps under `GAP_MS` don't count as leaving; a `REACTION_MS` delay
- * before starting and a longer `RESET_MS` before reversing make it read like a
- * person actually reaching for their reading glasses. The rAF loop stops when the
- * pose is settled and the cursor has been off text past `RESET_MS`; a `pointermove`
- * over text restarts it.
+ * Plays a sprite sheet forward (frame 0 → last) once the cursor settles on real
+ * text, and back to frame 0 once it's been away from text for a beat — like a
+ * person reaching for their reading glasses.
+ *
+ * "Over text" is tracked from element enter/leave (`mouseover` / `mouseout`), not
+ * from sampling `pointermove`, so it stays correct while the cursor sits still on
+ * text. A `REACTION_MS` delay before starting, a `GAP_MS` grace across element
+ * boundaries, and a longer `RESET_MS` before reversing keep it from twitching as
+ * the cursor moves along a sentence or between nav links. The rAF loop parks once
+ * the pose is resting; any `mouseover` restarts it.
  */
 export function useSpriteCue(options: SpriteCueOptions): void {
   const { canvasRef, image, active, interactive } = options;
@@ -90,34 +93,33 @@ export function useSpriteCue(options: SpriteCueOptions): void {
     const { frameWidth, frameHeight } = optionsRef.current;
     let progress = 0; // 0 = glasses off, 1 = fully on
     let target = 0;
+    let lastDrawnIndex = -1;
 
     const draw = () => {
       const { frameCount, columns } = optionsRef.current;
-      drawSpriteFrame({
-        ctx,
-        image,
-        frameIndex: progress * (frameCount - 1),
-        frameCount,
-        columns,
-        frameWidth,
-        frameHeight,
-      });
+      const index = Math.round(progress * (frameCount - 1));
+      if (index === lastDrawnIndex) return;
+      lastDrawnIndex = index;
+      drawSpriteFrame({ ctx, image, frameIndex: index, frameCount, columns, frameWidth, frameHeight });
     };
 
     sizeCanvasToFrame(canvas, frameWidth, frameHeight);
+    draw(); // show frame 0 immediately, before any cursor activity
     const observer = new ResizeObserver(() => {
       sizeCanvasToFrame(canvas, frameWidth, frameHeight);
+      lastDrawnIndex = -1; // the backing store was cleared — force a redraw
       draw();
     });
     observer.observe(canvas);
 
     if (!optionsRef.current.interactive) {
-      draw();
       return () => observer.disconnect();
     }
 
-    let lastTextTime = -Infinity; // performance.now() of the last moment over text
+    let overTextEl = false; // is the currently-hovered element text? (mouseover/out)
+    let lastTextAt = -Infinity; // performance.now() of the last frame we were over text
     let engagedSince: number | null = null;
+    let leftTextAt: number | null = null;
     let raf = 0;
     let last = 0;
     let running = false;
@@ -126,13 +128,17 @@ export function useSpriteCue(options: SpriteCueOptions): void {
       const dt = last ? Math.min(now - last, 100) : 16.667;
       last = now;
 
-      const overText = now - lastTextTime < GAP_MS;
-      if (overText) {
+      if (overTextEl) lastTextAt = now; // keep fresh while genuinely hovering — survives an idle cursor
+      const over = now - lastTextAt < GAP_MS;
+
+      if (over) {
+        leftTextAt = null;
         if (engagedSince === null) engagedSince = now;
         if (now - engagedSince >= REACTION_MS) target = 1;
       } else {
         engagedSince = null;
-        if (now - lastTextTime >= RESET_MS) target = 0;
+        if (leftTextAt === null) leftTextAt = now;
+        if (now - leftTextAt >= RESET_MS) target = 0;
       }
 
       const step = dt / (target > progress ? ON_MS : OFF_MS);
@@ -141,8 +147,12 @@ export function useSpriteCue(options: SpriteCueOptions): void {
 
       draw();
 
-      const settled = progress === target && now - lastTextTime >= RESET_MS;
-      if (settled) {
+      // Park the loop only in a genuinely settled state. `overTextEl` (not the
+      // graced `over`) gates "resting on" so we keep ticking through the grace
+      // window; `!over` gates "resting off" so the REACTION countdown can run.
+      const restingOn = target === 1 && progress === 1 && overTextEl;
+      const restingOff = target === 0 && progress === 0 && !over;
+      if (restingOn || restingOff) {
         running = false;
         last = 0;
       } else {
@@ -157,18 +167,33 @@ export function useSpriteCue(options: SpriteCueOptions): void {
       raf = requestAnimationFrame(tick);
     };
 
-    const onPointerMove = (event: PointerEvent) => {
-      if (isOverText(event.clientX, event.clientY)) {
-        lastTextTime = performance.now();
+    const onMouseOver = (event: MouseEvent) => {
+      const wasOverText = overTextEl;
+      overTextEl = isTextElement(event.target as Element | null);
+      if (overTextEl) lastTextAt = performance.now();
+      // Nothing to animate if the glasses are off and we're moving non-text → non-text.
+      if (overTextEl || wasOverText || progress > 0) ensureLoop();
+    };
+    const onMouseOut = (event: MouseEvent) => {
+      if (event.relatedTarget === null) {
+        overTextEl = false; // cursor left the document
         ensureLoop();
       }
     };
+    const onBlur = () => {
+      overTextEl = false;
+      ensureLoop();
+    };
 
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    document.addEventListener("mouseover", onMouseOver);
+    document.addEventListener("mouseout", onMouseOut);
+    window.addEventListener("blur", onBlur);
 
     return () => {
       observer.disconnect();
-      window.removeEventListener("pointermove", onPointerMove);
+      document.removeEventListener("mouseover", onMouseOver);
+      document.removeEventListener("mouseout", onMouseOut);
+      window.removeEventListener("blur", onBlur);
       cancelAnimationFrame(raf);
     };
   }, [canvasRef, image, active, interactive]);

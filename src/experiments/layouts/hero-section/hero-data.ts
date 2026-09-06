@@ -28,8 +28,8 @@ export const DEFAULT_NAV_LINKS: NavLinkData[] = [
 ];
 
 export const HEROES = [
-  { id: "cat", label: "Cat", kind: "sprite" },
   { id: "frog", label: "Frog", kind: "sprite" },
+  { id: "cat", label: "Cat", kind: "sprite" },
   { id: "reader", label: "Reader", kind: "sprite" },
 ] as const satisfies readonly HeroDef[];
 
