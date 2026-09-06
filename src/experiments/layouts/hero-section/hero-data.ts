@@ -6,11 +6,18 @@ export interface NavLinkData {
   label: string;
 }
 
-export interface PlaceholderImage {
+/**
+ * One selectable hero image. Every hero is meant to become cursor-interactive the
+ * same way — a `"sprite"` hero has its own subfolder under `heroes/` with a sprite
+ * sheet and frame metadata; a `"gradient"` hero is a stand-in swatch until it gets
+ * one.
+ */
+export interface HeroDef {
   id: string;
   label: string;
-  /** Gradient classes standing in for the real photo, uploaded later. */
-  className: string;
+  kind: "sprite" | "gradient";
+  /** Gradient heroes only — Tailwind gradient classes for the stand-in swatch. */
+  gradientClass?: string;
 }
 
 export const DEFAULT_NAV_LINKS: NavLinkData[] = [
@@ -20,13 +27,23 @@ export const DEFAULT_NAV_LINKS: NavLinkData[] = [
   { id: "contact", label: "Contact" },
 ];
 
-export const PLACEHOLDER_IMAGES = [
-  { id: "a", label: "Image A", className: "bg-gradient-to-br from-slate-500 to-slate-800" },
-  { id: "b", label: "Image B", className: "bg-gradient-to-br from-amber-500 to-rose-700" },
-  { id: "c", label: "Image C", className: "bg-gradient-to-br from-emerald-500 to-teal-800" },
-] as const satisfies readonly PlaceholderImage[];
+export const HEROES = [
+  { id: "cat", label: "Cat", kind: "sprite" },
+  {
+    id: "dusk",
+    label: "Dusk",
+    kind: "gradient",
+    gradientClass: "bg-gradient-to-br from-slate-500 to-slate-800",
+  },
+  {
+    id: "bloom",
+    label: "Bloom",
+    kind: "gradient",
+    gradientClass: "bg-gradient-to-br from-emerald-500 to-teal-800",
+  },
+] as const satisfies readonly HeroDef[];
 
-export type PlaceholderImageId = (typeof PLACEHOLDER_IMAGES)[number]["id"];
+export type HeroId = (typeof HEROES)[number]["id"];
 
 /** "full-bleed" — image touches the frame edges. "inset" — a spacing gap reveals the black backdrop. */
 export type HeroImageLayout = "full-bleed" | "inset";

@@ -1,36 +1,39 @@
-import type { HeroImageLayout, NavLinkData, PlaceholderImage } from "./hero-data";
+import type { HeroDef, HeroImageLayout, NavLinkData } from "./hero-data";
 import { NavBar } from "./NavBar";
-import { HeroImage } from "./HeroImage";
+import { HeroVisual } from "./HeroVisual";
 import { HeroText } from "./HeroText";
 
 interface HeroSectionProps {
   navLinks: NavLinkData[];
-  image: PlaceholderImage;
+  hero: HeroDef;
   imageLayout: HeroImageLayout;
   insetSpacingX: number;
   insetSpacingY: number;
   headline: string;
   subheading: string;
+  interactive: boolean;
 }
 
-/** The piece: a black page frame holding the nav, the hero image, and the hero text. */
+/** The piece: a black page frame holding the nav, the interactive hero image, and the hero text. */
 export function HeroSection({
   navLinks,
-  image,
+  hero,
   imageLayout,
   insetSpacingX,
   insetSpacingY,
   headline,
   subheading,
+  interactive,
 }: HeroSectionProps) {
   return (
     <div className="flex min-h-[520px] flex-col overflow-hidden rounded-card border border-border bg-black sm:min-h-[620px]">
       <NavBar links={navLinks} />
-      <HeroImage
-        image={image}
+      <HeroVisual
+        hero={hero}
         layout={imageLayout}
         insetSpacingX={insetSpacingX}
         insetSpacingY={insetSpacingY}
+        interactive={interactive}
       />
       <HeroText headline={headline} subheading={subheading} />
     </div>

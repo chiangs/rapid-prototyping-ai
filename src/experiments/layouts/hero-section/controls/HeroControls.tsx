@@ -1,6 +1,6 @@
-import type { HeroImageLayout, NavLinkData, PlaceholderImageId } from "../hero-data";
-import { HeroImageControl } from "./HeroImageControl";
+import type { HeroId, HeroImageLayout, NavLinkData } from "../hero-data";
 import { HeroLayoutControl } from "./HeroLayoutControl";
+import { HeroSelectControl } from "./HeroSelectControl";
 import { HeroTextControl } from "./HeroTextControl";
 import { NavLinksControl } from "./NavLinksControl";
 
@@ -13,8 +13,8 @@ interface HeroControlsProps {
   onNavLabelChange: (id: string, label: string) => void;
   onNavMoveUp: (id: string) => void;
   onNavMoveDown: (id: string) => void;
-  imageId: PlaceholderImageId;
-  onImageChange: (id: PlaceholderImageId) => void;
+  heroId: HeroId;
+  onHeroChange: (id: HeroId) => void;
   imageLayout: HeroImageLayout;
   onImageLayoutChange: (layout: HeroImageLayout) => void;
   insetSpacingX: number;
@@ -32,8 +32,8 @@ export function HeroControls({
   onNavLabelChange,
   onNavMoveUp,
   onNavMoveDown,
-  imageId,
-  onImageChange,
+  heroId,
+  onHeroChange,
   imageLayout,
   onImageLayoutChange,
   insetSpacingX,
@@ -49,9 +49,9 @@ export function HeroControls({
     <div
       role="group"
       aria-label={copy.groupLabel}
-      className="grid grid-cols-1 gap-6 rounded-card border border-border bg-surface p-4 sm:grid-cols-2 sm:gap-8 lg:grid-cols-4"
+      className="grid grid-cols-1 gap-6 rounded-card border border-border bg-surface p-4 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3"
     >
-      <HeroImageControl value={imageId} onChange={onImageChange} />
+      <HeroSelectControl value={heroId} onChange={onHeroChange} />
       <HeroLayoutControl
         layout={imageLayout}
         onLayoutChange={onImageLayoutChange}

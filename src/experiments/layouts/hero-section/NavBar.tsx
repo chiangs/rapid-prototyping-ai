@@ -2,7 +2,7 @@ import type { NavLinkData } from "./hero-data";
 import { NavLink } from "./NavLink";
 
 const copy = {
-  logo: "Studio",
+  logo: "Rago",
 } as const;
 
 interface NavBarProps {
@@ -14,7 +14,7 @@ export function NavBar({ links }: NavBarProps) {
 
   return (
     <div className="flex items-center justify-between px-6 py-4 sm:px-8">
-      <span className="text-sm font-semibold tracking-wide text-white">{copy.logo}</span>
+      <span className="text-lg font-semibold tracking-wide text-white">{copy.logo}</span>
       <nav className="flex items-center gap-1 sm:gap-2">{navLinks}</nav>
     </div>
   );

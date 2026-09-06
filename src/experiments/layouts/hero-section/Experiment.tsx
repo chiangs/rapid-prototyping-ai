@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { ExperimentMeta } from "@/experiments/registry";
 import { HeroControls } from "./controls/HeroControls";
 import { HeroSection } from "./HeroSection";
+import { useReducedMotion } from "./use-reduced-motion";
 import {
   DEFAULT_HEADLINE,
   DEFAULT_IMAGE_LAYOUT,
@@ -9,42 +10,57 @@ import {
   DEFAULT_INSET_SPACING_Y,
   DEFAULT_NAV_LINKS,
   DEFAULT_SUBHEADING,
-  PLACEHOLDER_IMAGES,
+  HEROES,
   moveItem,
+  type HeroDef,
+  type HeroId,
   type HeroImageLayout,
   type NavLinkData,
-  type PlaceholderImageId,
 } from "./hero-data";
 
 export const meta = {
   title: "Hero section",
   description:
-    "A full-bleed hero image below a mocked top nav, with editable nav links and hero text.",
-  complexity: "simple",
-  tags: ["navigation", "layout", "hero"],
+    "A pluggable hero image that scrubs a sprite-sheet animation to follow the cursor, above a mocked nav.",
+  complexity: "complex",
+  tags: ["navigation", "layout", "hero", "animation"],
 } satisfies ExperimentMeta;
 
 export default function Experiment() {
   const [navLinks, setNavLinks] = useState<NavLinkData[]>(DEFAULT_NAV_LINKS);
-  const [imageId, setImageId] = useState<PlaceholderImageId>(PLACEHOLDER_IMAGES[0].id);
+  const [heroId, setHeroId] = useState<HeroId>(HEROES[0].id);
   const [imageLayout, setImageLayout] = useState<HeroImageLayout>(DEFAULT_IMAGE_LAYOUT);
   const [insetSpacingX, setInsetSpacingX] = useState(DEFAULT_INSET_SPACING_X);
   const [insetSpacingY, setInsetSpacingY] = useState(DEFAULT_INSET_SPACING_Y);
   const [headline, setHeadline] = useState(DEFAULT_HEADLINE);
   const [subheading, setSubheading] = useState(DEFAULT_SUBHEADING);
 
-  const activeImage = PLACEHOLDER_IMAGES.find((image) => image.id === imageId)!;
+  const reducedMotion = useReducedMotion();
+  const activeHero: HeroDef = HEROES.find((hero) => hero.id === heroId) ?? HEROES[0];
+  const heroInteractive = activeHero.kind === "sprite" && !reducedMotion;
 
   const handleNavLabelChange = (id: string, label: string) => {
     setNavLinks((links) => links.map((link) => (link.id === id ? { ...link, label } : link)));
   };
 
   const handleNavMoveUp = (id: string) => {
-    setNavLinks((links) => moveItem(links, links.findIndex((link) => link.id === id), "up"));
+    setNavLinks((links) =>
+      moveItem(
+        links,
+        links.findIndex((link) => link.id === id),
+        "up",
+      ),
+    );
   };
 
   const handleNavMoveDown = (id: string) => {
-    setNavLinks((links) => moveItem(links, links.findIndex((link) => link.id === id), "down"));
+    setNavLinks((links) =>
+      moveItem(
+        links,
+        links.findIndex((link) => link.id === id),
+        "down",
+      ),
+    );
   };
 
   return (
@@ -54,8 +70,8 @@ export default function Experiment() {
         onNavLabelChange={handleNavLabelChange}
         onNavMoveUp={handleNavMoveUp}
         onNavMoveDown={handleNavMoveDown}
-        imageId={imageId}
-        onImageChange={setImageId}
+        heroId={heroId}
+        onHeroChange={setHeroId}
         imageLayout={imageLayout}
         onImageLayoutChange={setImageLayout}
         insetSpacingX={insetSpacingX}
@@ -69,12 +85,13 @@ export default function Experiment() {
       />
       <HeroSection
         navLinks={navLinks}
-        image={activeImage}
+        hero={activeHero}
         imageLayout={imageLayout}
         insetSpacingX={insetSpacingX}
         insetSpacingY={insetSpacingY}
         headline={headline}
         subheading={subheading}
+        interactive={heroInteractive}
       />
     </div>
   );
