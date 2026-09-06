@@ -98,6 +98,18 @@ production — it can't lean on an effect that only works in one engine.
 - Use `cn()` (`src/lib/cn.ts`) for conditional and merged classes — never string-concatenate
   Tailwind classes by hand.
 
+### Deviating from Tailwind/framework best practices
+
+- If an implementation deliberately steps around a recommended Tailwind or React pattern — a
+  boolean prop threaded through components instead of the `dark:` variant, an inline style
+  standing in for a token, a hand-rolled effect instead of a browser API — for a defensible reason
+  (no supporting infrastructure exists yet, keeping a prototype self-contained, time-boxing the
+  experiment), don't just build it silently.
+- Record it under a **Best-practice note** heading in the experiment's `README.md` — same pattern
+  as a Browser note or Accessibility note: what was done, why, and what the correct production
+  pattern would look like instead.
+- These notes must survive promotion — see `CLAUDE.md`'s Promotion section.
+
 ## Keep it simple
 
 Every prototype here gets read by a developer who will re-implement it in a production codebase.

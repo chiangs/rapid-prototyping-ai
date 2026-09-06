@@ -64,6 +64,11 @@ Pieces approved for further development move to `src/dev-ready/components/` or
 times. Leave `Experiment.tsx`, `controls/`, and any showcase-only backdrop/mock behind — only the
 piece itself is promoted.
 
+The experiment's `README.md` itself is left behind with the rest of the scaffolding — but any
+**Browser note**, **Accessibility note**, or **Best-practice note** headings in it (see
+`docs/DESIGN.md`) document a real, still-relevant gap or deviation and must not be silently
+dropped. Carry each one forward as a short comment on the affected code in the promoted file(s).
+
 Promotion happens on its own branch `promote/<slug>` cut from current `main` (not the `exp/<slug>`
 branch, which is usually already merged); commits use `promote(<slug>): <what changed>`.
 
@@ -83,6 +88,9 @@ branch, which is usually already merged); commits use `promote(<slug>): <what ch
 3. Then do the move on `promote/<slug>`: relocate the piece (plus co-located sub-components / `.ts`
    helpers) to `src/dev-ready/components/` or `.../layouts/`, drop mock data / `meta` / `controls/` /
    showcase backdrop, check the result against `docs/DESIGN.md`, keep `main` runnable.
+4. Carry forward any Browser note / Accessibility note / Best-practice note from the experiment's
+   `README.md` as a short comment on the affected code — the README itself doesn't move, but a
+   documented gap or deviation shouldn't disappear with it.
 
 ## Skills
 

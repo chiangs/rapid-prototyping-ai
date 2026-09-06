@@ -36,13 +36,19 @@ The designer says "I want to promote `<experiment>`" (or equivalent).
 
 5. **Apply the chosen promotion level** (props-driven vs. as-is) from step 2.
 
-6. **Check the result against `docs/DESIGN.md`** (states, contrast, tokens, semantic
+6. **Carry forward any Browser note / Accessibility note / Best-practice note** headings
+   from the experiment's `README.md` (see `docs/DESIGN.md`) as a short comment on the
+   affected code in the promoted file(s). The README itself is left behind with the rest
+   of the scaffolding — but a documented gap or deviation is still true in production and
+   must not silently disappear with it.
+
+7. **Check the result against `docs/DESIGN.md`** (states, contrast, tokens, semantic
    HTML/accessibility, declarative JSX, one-component-per-file, `copy` object, naming) —
    run the `accessibility-review` skill for the accessibility pass — promoted code is
    what a developer re-implements in production.
 
-7. **Keep `main` runnable at all times** — if the demo experiment is being deleted,
+8. **Keep `main` runnable at all times** — if the demo experiment is being deleted,
    make sure nothing else still imports it; if it's kept as a thin demo, confirm it
    only imports the now-promoted component and still renders.
 
-8. **Commit** using the `commit` skill's conventions — `promote(<slug>): <what changed>`.
+9. **Commit** using the `commit` skill's conventions — `promote(<slug>): <what changed>`.
