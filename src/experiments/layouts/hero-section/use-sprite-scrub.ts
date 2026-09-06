@@ -1,4 +1,5 @@
 import { useEffect, useRef, type RefObject } from "react";
+import { drawSpriteFrame, sizeCanvasToFrame } from "./sprite-frame";
 
 // Fixed feel for the cursor scrub — tuned once, not exposed as controls.
 /** Per-frame easing of the displayed frame toward the cursor target (0–1). */
@@ -20,6 +21,8 @@ interface SpriteScrubOptions {
   frameHeight: number;
   /** Frame the character rests on when the pointer is away. */
   idleFrame: number;
+  /** False when another behaviour drives this hero — the hook does nothing. */
+  active: boolean;
   /** When false, the idle frame is drawn once with no pointer listeners or loop. */
   interactive: boolean;
 }
@@ -35,10 +38,10 @@ interface SpriteScrubOptions {
  * mobile-bottom-nav/use-nav-scroll.ts).
  *
  * `idleFrame` is read live through a ref so switching heroes doesn't restart the
- * loop; only a new sheet or an interactivity change re-runs the effect.
+ * loop; only a new sheet, `active`, or `interactive` re-runs the effect.
  */
 export function useSpriteScrub(options: SpriteScrubOptions): void {
-  const { canvasRef, image, interactive } = options;
+  const { canvasRef, image, active, interactive } = options;
 
   const optionsRef = useRef(options);
   useEffect(() => {
@@ -46,6 +49,7 @@ export function useSpriteScrub(options: SpriteScrubOptions): void {
   });
 
   useEffect(() => {
+    if (!active) return;
     const canvas = canvasRef.current;
     if (!canvas || !image) return;
     const ctx = canvas.getContext("2d");
@@ -55,32 +59,22 @@ export function useSpriteScrub(options: SpriteScrubOptions): void {
     const { frameWidth, frameHeight } = optionsRef.current;
     let frame = optionsRef.current.idleFrame;
 
-    const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.round(frameWidth * dpr);
-      canvas.height = Math.round(frameHeight * dpr);
-    };
-
     const draw = () => {
       const { frameCount, columns } = optionsRef.current;
-      const index = Math.max(0, Math.min(frameCount - 1, Math.round(frame)));
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(
+      drawSpriteFrame({
+        ctx,
         image,
-        (index % columns) * frameWidth,
-        Math.floor(index / columns) * frameHeight,
+        frameIndex: frame,
+        frameCount,
+        columns,
         frameWidth,
         frameHeight,
-        0,
-        0,
-        canvas.width,
-        canvas.height,
-      );
+      });
     };
 
-    resize();
+    sizeCanvasToFrame(canvas, frameWidth, frameHeight);
     const observer = new ResizeObserver(() => {
-      resize();
+      sizeCanvasToFrame(canvas, frameWidth, frameHeight);
       draw();
     });
     observer.observe(canvas);
@@ -141,5 +135,5 @@ export function useSpriteScrub(options: SpriteScrubOptions): void {
       window.removeEventListener("blur", onPointerGone);
       cancelAnimationFrame(raf);
     };
-  }, [canvasRef, image, interactive]);
+  }, [canvasRef, image, active, interactive]);
 }

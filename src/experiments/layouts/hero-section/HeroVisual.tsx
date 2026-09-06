@@ -2,11 +2,13 @@ import type { ComponentType, CSSProperties, ReactNode } from "react";
 import type { HeroDef, HeroImageLayout } from "./hero-data";
 import { CatHero } from "./heroes/cat/CatHero";
 import { FrogHero } from "./heroes/frog/FrogHero";
+import { ReaderHero } from "./heroes/reader/ReaderHero";
 import { HeroGradient } from "./HeroGradient";
 
 const copy = {
   catLabel: "Animated black cat that turns to follow your cursor",
   frogLabel: "Animated frog that points wherever your cursor goes",
+  readerLabel: "Man who puts on reading glasses when the cursor is over text",
 } as const;
 
 interface SpriteHeroProps {
@@ -19,6 +21,7 @@ const SPRITE_HEROES: Record<string, { Component: ComponentType<SpriteHeroProps>;
   {
     cat: { Component: CatHero, label: copy.catLabel },
     frog: { Component: FrogHero, label: copy.frogLabel },
+    reader: { Component: ReaderHero, label: copy.readerLabel },
   };
 
 interface HeroVisualProps {

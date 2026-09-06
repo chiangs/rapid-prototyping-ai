@@ -1,92 +1,106 @@
 # Hero section
 
 **Intent:** A page-hero pattern where the hero image is *interactive* — the pictured character
-scrubs through a sprite-sheet animation to follow the cursor, easing toward the frame under the
-pointer and easing back to a resting pose when the pointer leaves. A mocked top nav sits above,
-hero text below.
+plays a sprite-sheet animation in response to the cursor. A mocked top nav sits above, hero text
+below. Three heroes, two interaction behaviours:
 
-Each hero's frames run monotonically from a "left" pose through a centre pose to a "right" pose,
-so cursor X maps straight onto the frame index. The pointer is tracked on `window`, so the
-character keeps following the cursor even when it's outside the image (over the nav, the
-controls, anywhere on the page); it eases back to its centre idle pose only when the cursor
-leaves the window. Only the nearest whole frame is ever drawn — no blending between frames — so
-there's no motion ghosting; a few dozen frames across the sweep is enough that the stepping
-isn't noticeable. The scrub feel (easing rate, sweep sensitivity) is fixed in
-`use-sprite-scrub.ts`, not exposed as controls.
+- **`"cursor-x"`** (`use-sprite-scrub.ts`) — Cat and Frog. Frames run monotonically from a "left"
+  pose through a centre pose to a "right" pose, so cursor X maps straight onto the frame index.
+  The pointer is tracked on `window`, so the character keeps following the cursor even outside the
+  image; it eases back to its centre idle pose only when the cursor leaves the window.
+- **`"text-cue"`** (`use-sprite-cue.ts`) — Reader. Plays the sheet forward (frame 0 → last) once
+  the cursor settles on real text, and back to frame 0 once it's been away from text for a beat.
+  Word gaps and nav-link gaps under `GAP_MS` don't count as leaving; a `REACTION_MS` delay before
+  starting and a longer `RESET_MS` before reversing make it read like a person actually reaching
+  for their reading glasses.
 
-The hero image is pluggable: `HeroSelectControl` switches between heroes defined in `hero-data.ts`,
-and `HeroVisual.tsx` maps each sprite hero's id to its component. **Cat** and **Frog** are
-sprite-animated (`heroes/cat/`, `heroes/frog/` — each with its own sheet + frame metadata);
-**Bloom** is a gradient stand-in that will get its own `heroes/<name>/` folder and sheet later.
-The scrub engine is shared and hero-agnostic: `SpriteScrubCanvas.tsx` (loads a sheet) +
-`use-sprite-scrub.ts` (cursor → frame easing on a `<canvas>` 2D context).
+Only the nearest whole frame is ever drawn — no blending between frames — so there's no motion
+ghosting; a few dozen frames per gesture is enough that the stepping isn't noticeable. All the
+timing constants are fixed in the two hooks, not exposed as controls.
 
-Live controls (`controls/`, dev-only): hero selector, nav links, headline/subheading, and image
-layout.
+## Structure
 
-**Cat sheet** (`heroes/cat/cat-sprite.webp`) — cut from a 24fps clip with FFmpeg: the ~1.9s
-sub-range where the cat turns its head left→right *while keeping its gaze up* (the fuller turn
-dips the gaze down-right, which read wrong for a cursor over the top nav); 45 native frames, no
-interpolation (optical-flow interpolation softened the image, and cross-fading adjacent frames
-ghosted the ears while turning); 880×378 in a 9×5 grid (7920×1890), WebP q90 (~585 KB). The frame
-is already wide, so the canvas uses `object-cover`.
+- `SpriteHeroCanvas.tsx` loads a sheet and calls **both** behaviour hooks (rules of hooks); each
+  hook does nothing unless its `active` matches the hero's `behavior`. `sprite-frame.ts` holds the
+  shared canvas helpers (`sizeCanvasToFrame`, `drawSpriteFrame`).
+- `hero-data.ts` lists the heroes; `HeroVisual.tsx` maps each sprite hero's id to its component
+  and accessible label (`SPRITE_HEROES`).
+- Each hero is a folder under `heroes/`: a `<name>-sprite.ts` (frame metadata, `objectFit`,
+  optional `background`, `?url` import of the sheet) and a thin `<Name>Hero.tsx`.
+- Live controls (`controls/`, dev-only): hero selector, nav links, headline/subheading, image
+  layout. The controls panel carries `data-hero-cue-ignore` so its label text doesn't trigger the
+  Reader's glasses cue.
 
-**Frog sheet** (`heroes/frog/frog-sprite.webp`) — a dance where the frog points screen-left,
-raises its arms (centre), then points screen-right; 25 frames resampled from that sub-range;
-1024×534 in a 5×5 grid (5120×2670), WebP q90 (~660 KB). The frog is a tall standing figure, so
-the canvas uses `object-contain` with a CSS background gradient matching the clip's own
-background — the letterbox is then invisible. `objectFit` and `background` are per-hero fields
-on the sprite metadata.
+## Sprite sheets
 
-Both clips are AI-generated, supplied by the designer.
+Each was cut from a 24fps AI-generated clip with FFmpeg. A grid rather than a single row keeps
+frames near source resolution while staying under the 16383px WebP dimension limit.
+
+- **Cat** (`heroes/cat/cat-sprite.webp`) — the ~1.9s sub-range where the cat turns its head
+  left→right *while keeping its gaze up* (the fuller turn dips the gaze down-right, which read
+  wrong for a cursor over the top nav); 45 native frames, no interpolation (optical-flow
+  interpolation softened the image, and cross-fading adjacent frames ghosted the ears while
+  turning); 880×378, 9×5 grid, WebP q90 (~585 KB). The frame is wide, so `object-cover`.
+- **Frog** (`heroes/frog/frog-sprite.webp`) — a dance: points screen-left, arms up (centre),
+  points screen-right; 25 frames resampled from that sub-range; 1024×534, 5×5 grid, WebP q90
+  (~660 KB). Tall standing figure → `object-contain` with a `background` gradient matching the
+  clip's own background, so the letterbox is invisible.
+- **Reader** (`heroes/reader/reader-sprite.webp`) — the first ~2.2s of a man putting reading
+  glasses on: frame 0 is "no glasses", the last frame is glasses on with a hand at the temple;
+  25 frames, 1024×640, 5×5 grid, WebP q84 (~640 KB). Portrait → `object-contain` with a dark
+  radial `background` matching the studio vignette.
 
 ## Browser note
 
 - Canvas 2D + `requestAnimationFrame` + window `pointermove` + `devicePixelRatio` backing-store
-  scaling render consistently in current Chrome, Firefox, and Safari.
+  scaling render consistently in current Chrome, Firefox, and Safari. `use-sprite-cue.ts` also
+  uses `document.elementFromPoint` (widely supported) on each pointer move.
 - **Touch / iOS Safari:** there is no hover, and `pointermove` only fires mid-drag, so on touch
-  devices the hero simply rests on the idle frame — no scrub. Acceptable for this prototype; a
-  production version aimed at mobile would need a different input (scroll-linked, device tilt, or
-  an autoplay loop).
-- Each sprite sheet (cat 7920×1890, frog 5120×2670) is well under the **16383px WebP dimension
-  limit** and Firefox's 32767px image cap. Decoded sizes (~15 MP / ~14 MP) are within the ~16 MP
-  ceiling older iOS Safari applied to a single image; a substantially larger/longer animation
+  devices the hero simply rests on its resting frame — no scrub, no cue. Acceptable for this
+  prototype; a mobile-facing production version would need a different input (scroll-linked,
+  device tilt, an autoplay loop).
+- The sheets (cat 7920×1890, frog 5120×2670, reader 5120×3200) are well under the **16383px WebP
+  dimension limit** and Firefox's 32767px image cap. Decoded sizes (~14–16 MP) sit around the
+  ~16 MP ceiling older iOS Safari applied to a single image; a substantially larger animation
   would need to check that limit or split into multiple sheets.
-- `object-cover` (cat) crops the frame on very tall/wide hero areas; `object-contain` (frog)
-  letterboxes it. The frog's letterbox is filled by a CSS `background` gradient that matches the
-  clip's own background, so it reads as full-bleed at any hero aspect.
-- Automated in-browser verification of the scrub was blocked in this environment (the local
-  security setup resets WebSocket connections to Chrome's debug port); the interaction was
-  checked by code review and a static render. Confirm the feel with `npm run dev`.
+- `object-cover` (cat) crops the frame on very tall/wide hero areas; `object-contain` (frog,
+  reader) letterboxes it, with the gap filled by a CSS `background` matching the clip so it reads
+  full-bleed at any hero aspect.
+- Automated in-browser verification of the interaction was blocked in this environment (the local
+  security setup resets WebSocket connections to Chrome's debug port); the behaviour was checked
+  by code review and static renders. Confirm the feel with `npm run dev`.
 
 ## Accessibility note
 
-The cursor-scrub interaction has no keyboard or pointer-free equivalent — it's a decorative
-enhancement with no established accessible pattern, so it ships under the novel-interaction
+The cursor-driven animations have no keyboard or pointer-free equivalent — decorative
+enhancements with no established accessible pattern, so they ship under the novel-interaction
 carve-out in `docs/DESIGN.md` → Accessibility → Scope carve-outs. The accessible baseline is
 intact: the canvas is `role="img"` with an `aria-label` describing the subject, it renders a
-single static frame under `prefers-reduced-motion: reduce` (no tracking, no rAF, no window
-listeners), the nav links keep hover + `focus-visible` states, and heading order (page `h1` →
-hero `h2`) is unbroken.
+single static frame under `prefers-reduced-motion: reduce` (no rAF, no window listeners), the nav
+links keep hover + `focus-visible` states, and heading order (page `h1` → hero `h2`) is unbroken.
 
 ## Best-practice note
 
+- Both behaviour hooks read their tunables from module-level constants rather than props/tokens —
+  there's no motion-token infrastructure in `src/styles/index.css`, and they were tuned to
+  reference clips once. Production would lift them to props.
 - `use-sprite-scrub.ts` reads `idleFrame` through a ref (kept current by an effect) so switching
-  heroes doesn't tear down and restart the rAF loop mid-frame. This is a deliberate step around
-  the usual "put everything in the dependency array" guidance. Production could instead split the
-  loop into a stable driver + a store subscription.
-- The scrub's easing rates and sensitivity are module-level constants in `use-sprite-scrub.ts`
-  rather than props/tokens — there's no motion-token infrastructure in `src/styles/index.css`,
-  and they were tuned to a reference clip once. Production would lift them to props.
-- Adding a sprite hero: create `heroes/<name>/` with a `<name>-sprite.ts` (metadata + `?url`
-  import of the sheet) and a thin `<Name>Hero.tsx`, then add one line to `SPRITE_HEROES` in
-  `HeroVisual.tsx` and flip the hero's `kind` to `"sprite"` in `hero-data.ts`. No engine changes.
+  heroes doesn't restart the rAF loop mid-frame — a deliberate step around the usual "put
+  everything in the dependency array" guidance.
+- `use-sprite-cue.ts` decides "is the cursor over text" with an `elementFromPoint` + tag-name
+  heuristic (`A`, `P`, `H1`–`H6`, `LI`, `SPAN`, `BUTTON`, …) rather than precise glyph hit-testing
+  (`caretPositionFromPoint`). It's good enough for the demo; production reading-aware UI would use
+  the caret API or explicit opt-in markers.
+- Adding a sprite hero: create `heroes/<name>/` (`<name>-sprite.ts` + `<Name>Hero.tsx`), add one
+  line to `SPRITE_HEROES` in `HeroVisual.tsx`, and add the hero to `HEROES` in `hero-data.ts`. New
+  behaviours are a new `use-sprite-*.ts` hook called alongside the others in `SpriteHeroCanvas`.
 
 ## When promoting
 
-Move the shared engine (`SpriteScrubCanvas.tsx`, `use-sprite-scrub.ts`, `use-reduced-motion.ts`)
-plus `HeroSection.tsx` / `NavBar.tsx` / `NavLink.tsx` / `HeroVisual.tsx` / `HeroText.tsx` and the
-per-hero `heroes/<name>/` folders into `src/dev-ready/layouts/`. Turn the scrub constants, nav
-links, hero list, and text into props (the `controls/` UI stays behind). Carry the notes above
-forward as comments on the affected code. Decide final hero-text placement (overlay on the image
-is the more common pattern) before baking in a layout.
+Move the shared engine (`SpriteHeroCanvas.tsx`, `sprite-frame.ts`, `use-sprite-scrub.ts`,
+`use-sprite-cue.ts`, `use-reduced-motion.ts`) plus `HeroSection.tsx` / `NavBar.tsx` / `NavLink.tsx`
+/ `HeroVisual.tsx` / `HeroText.tsx` and the per-hero `heroes/<name>/` folders into
+`src/dev-ready/layouts/`. Turn the hook constants, nav links, hero list, and text into props (the
+`controls/` UI stays behind). Carry the notes above forward as comments on the affected code.
+Decide final hero-text placement (overlay on the image is the more common pattern) before baking
+in a layout.

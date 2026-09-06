@@ -30,12 +30,7 @@ export const DEFAULT_NAV_LINKS: NavLinkData[] = [
 export const HEROES = [
   { id: "cat", label: "Cat", kind: "sprite" },
   { id: "frog", label: "Frog", kind: "sprite" },
-  {
-    id: "bloom",
-    label: "Bloom",
-    kind: "gradient",
-    gradientClass: "bg-gradient-to-br from-emerald-500 to-teal-800",
-  },
+  { id: "reader", label: "Reader", kind: "sprite" },
 ] as const satisfies readonly HeroDef[];
 
 export type HeroId = (typeof HEROES)[number]["id"];
