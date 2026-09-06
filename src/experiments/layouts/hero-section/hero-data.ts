@@ -29,12 +29,7 @@ export const DEFAULT_NAV_LINKS: NavLinkData[] = [
 
 export const HEROES = [
   { id: "cat", label: "Cat", kind: "sprite" },
-  {
-    id: "dusk",
-    label: "Dusk",
-    kind: "gradient",
-    gradientClass: "bg-gradient-to-br from-slate-500 to-slate-800",
-  },
+  { id: "frog", label: "Frog", kind: "sprite" },
   {
     id: "bloom",
     label: "Bloom",

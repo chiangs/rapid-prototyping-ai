@@ -17,4 +17,6 @@ export const CAT_SPRITE = {
   frameHeight: 378,
   /** Forward-facing pose (middle of the turn) the cat eases back to on pointer leave. */
   idleFrame: 22,
+  /** The frame is already wide; cover fills the hero cleanly with no letterbox. */
+  objectFit: "cover",
 } as const;

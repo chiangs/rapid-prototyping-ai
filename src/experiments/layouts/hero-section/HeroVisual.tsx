@@ -1,11 +1,25 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ComponentType, CSSProperties, ReactNode } from "react";
 import type { HeroDef, HeroImageLayout } from "./hero-data";
 import { CatHero } from "./heroes/cat/CatHero";
+import { FrogHero } from "./heroes/frog/FrogHero";
 import { HeroGradient } from "./HeroGradient";
 
 const copy = {
   catLabel: "Animated black cat that turns to follow your cursor",
+  frogLabel: "Animated frog that points wherever your cursor goes",
 } as const;
+
+interface SpriteHeroProps {
+  interactive: boolean;
+  label: string;
+}
+
+/** Which component + accessible label drives each `"sprite"` hero id. */
+const SPRITE_HEROES: Record<string, { Component: ComponentType<SpriteHeroProps>; label: string }> =
+  {
+    cat: { Component: CatHero, label: copy.catLabel },
+    frog: { Component: FrogHero, label: copy.frogLabel },
+  };
 
 interface HeroVisualProps {
   hero: HeroDef;
@@ -36,9 +50,12 @@ export function HeroVisual({
         }
       : undefined;
 
+  const spriteHero = hero.kind === "sprite" ? SPRITE_HEROES[hero.id] : undefined;
+
   let visual: ReactNode;
-  if (hero.kind === "sprite" && hero.id === "cat") {
-    visual = <CatHero interactive={interactive} label={copy.catLabel} />;
+  if (spriteHero) {
+    const SpriteHero = spriteHero.Component;
+    visual = <SpriteHero interactive={interactive} label={spriteHero.label} />;
   } else {
     visual = <HeroGradient name={hero.label} gradientClass={hero.gradientClass ?? ""} />;
   }

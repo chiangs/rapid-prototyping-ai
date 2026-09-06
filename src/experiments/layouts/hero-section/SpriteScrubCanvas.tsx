@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/cn";
 import { useSpriteScrub } from "./use-sprite-scrub";
 
 interface SpriteScrubCanvasProps {
@@ -9,6 +10,10 @@ interface SpriteScrubCanvasProps {
   frameWidth: number;
   frameHeight: number;
   idleFrame: number;
+  /** How the frame fills the hero area. Tall figures use "contain" plus a `background`. */
+  objectFit: "cover" | "contain";
+  /** CSS background for the canvas element — shows through the "contain" letterbox. */
+  background?: string;
   /** When false, renders the idle frame with no cursor tracking (reduced motion). */
   interactive: boolean;
   /** Describes the pictured subject for assistive tech. */
@@ -27,6 +32,8 @@ export function SpriteScrubCanvas({
   frameWidth,
   frameHeight,
   idleFrame,
+  objectFit,
+  background,
   interactive,
   label,
 }: SpriteScrubCanvasProps) {
@@ -58,12 +65,15 @@ export function SpriteScrubCanvas({
     interactive,
   });
 
+  const fitClass = objectFit === "contain" ? "object-contain" : "object-cover object-center";
+
   return (
     <canvas
       ref={canvasRef}
       role="img"
       aria-label={label}
-      className="h-full w-full object-cover object-center"
+      style={{ background }}
+      className={cn("h-full w-full", fitClass)}
     />
   );
 }

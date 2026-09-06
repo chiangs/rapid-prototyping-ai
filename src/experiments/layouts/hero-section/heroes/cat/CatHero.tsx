@@ -16,6 +16,7 @@ export function CatHero({ interactive, label }: CatHeroProps) {
       frameWidth={CAT_SPRITE.frameWidth}
       frameHeight={CAT_SPRITE.frameHeight}
       idleFrame={CAT_SPRITE.idleFrame}
+      objectFit={CAT_SPRITE.objectFit}
       interactive={interactive}
       label={label}
     />
