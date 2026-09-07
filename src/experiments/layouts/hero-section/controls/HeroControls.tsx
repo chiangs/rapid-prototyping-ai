@@ -51,9 +51,21 @@ export function HeroControls({
       aria-label={copy.groupLabel}
       // Dev scaffolding — its label text shouldn't trigger the Reader hero's glasses cue.
       data-hero-cue-ignore
-      className="grid grid-cols-1 gap-6 rounded-card border border-border bg-surface p-4 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3"
+      className="grid grid-cols-1 gap-6 rounded-card border border-border bg-surface p-4 sm:grid-cols-2 sm:gap-8"
     >
+      <HeroTextControl
+        headline={headline}
+        subheading={subheading}
+        onHeadlineChange={onHeadlineChange}
+        onSubheadingChange={onSubheadingChange}
+      />
       <HeroSelectControl value={heroId} onChange={onHeroChange} />
+      <NavLinksControl
+        links={navLinks}
+        onLabelChange={onNavLabelChange}
+        onMoveUp={onNavMoveUp}
+        onMoveDown={onNavMoveDown}
+      />
       <HeroLayoutControl
         layout={imageLayout}
         onLayoutChange={onImageLayoutChange}
@@ -61,18 +73,6 @@ export function HeroControls({
         onSpacingXChange={onInsetSpacingXChange}
         spacingY={insetSpacingY}
         onSpacingYChange={onInsetSpacingYChange}
-      />
-      <HeroTextControl
-        headline={headline}
-        subheading={subheading}
-        onHeadlineChange={onHeadlineChange}
-        onSubheadingChange={onSubheadingChange}
-      />
-      <NavLinksControl
-        links={navLinks}
-        onLabelChange={onNavLabelChange}
-        onMoveUp={onNavMoveUp}
-        onMoveDown={onNavMoveDown}
       />
     </div>
   );
